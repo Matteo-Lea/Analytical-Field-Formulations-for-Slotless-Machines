@@ -20,6 +20,21 @@ mode = 'NO_DEMAG'; % 'NO_DEMAG --> optimization without demagnetization
                    % 'W_DEMAG --> optimization with demagnetization
 load(['RESULTS\' polepairs '\' mode '\' polepairs ])
 % % main geometry
+% ex-opt-1
+% l_a = 0.2673; % active lenght [m]
+% R_s = 0.1447; % stator radius [m]
+% R_wi = R_s; % winding radius [m]
+% R_w = R_s-0.0096; % winding radius [m]
+% R_m = R_w-0.0015; % magnets array outer radius [m]
+% R_r = R_m-0.0163; % outer rotor radius (inner magnets radius) [m]
+% R_se = 1.01*R_s; % outer stator radius [m]
+% R_i = R_r; % Iron boundary radius facing the magnets
+% R_ie = R_i-sign(R_w-R_m)*0.1*R_i;
+% g = R_w-R_m; % air-gap thickness [m]
+% R_1 = R_m +g/2; % mid-air-gap radius [m]
+% R_2 = R_s/2+R_se/2; % mid-stator radius
+% p = 19;
+% alpha_p = 0.5321; % mid-magnet to pole ratio [-]
 
 % ex-opt-1
 R_s = REP.pos(3); % stator radius [m]
