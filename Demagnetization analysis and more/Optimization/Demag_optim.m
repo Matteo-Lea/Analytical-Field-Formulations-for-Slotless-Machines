@@ -2,11 +2,12 @@
 
 % Matteo Leandro
 % matteo.leandro@ntnu.no
-% VERSION: 12Feb2020
+% VERSION: 24Oct2022
 
-% This code finds the field solution in the airgap region, magnets region
-% and iron region of a slotless machine (inrunner or outrunner) and plots
-% the field map in all the regions
+% This code is used to check the demagnetization phenomenon in optimizad
+% slotless motors stored in RESULTS folder. The optimization was run with a
+% specific magneet grade. Do not change the PM material properties to make
+% hav a consistent final result.
 %% Machine parameters
 clearvars
 clc
@@ -19,22 +20,6 @@ mode = 'NO_DEMAG'; % 'NO_DEMAG --> optimization without demagnetization
                    % 'W_DEMAG --> optimization with demagnetization
 load(['RESULTS\' polepairs '\' mode '\' polepairs ])
 % % main geometry
-
-% ex-opt-1
-% l_a = 0.2673; % active lenght [m]
-% R_s = 0.1447; % stator radius [m]
-% R_wi = R_s; % winding radius [m]
-% R_w = R_s-0.0096; % winding radius [m]
-% R_m = R_w-0.0015; % magnets array outer radius [m]
-% R_r = R_m-0.0163; % outer rotor radius (inner magnets radius) [m]
-% R_se = 1.01*R_s; % outer stator radius [m]
-% R_i = R_r; % Iron boundary radius facing the magnets
-% R_ie = R_i-sign(R_w-R_m)*0.1*R_i;
-% g = R_w-R_m; % air-gap thickness [m]
-% R_1 = R_m +g/2; % mid-air-gap radius [m]
-% R_2 = R_s/2+R_se/2; % mid-stator radius
-% p = 19;
-% alpha_p = 0.5321; % mid-magnet to pole ratio [-]
 
 % ex-opt-1
 R_s = REP.pos(3); % stator radius [m]
@@ -52,7 +37,7 @@ R_2 = R_s/2+R_se/2; % mid-stator radius
 p = REP.pos(9);
 alpha_p = REP.pos(1); % mid-magnet to pole ratio [-]
 
-% PM material properties used in the optimization
+%% PM material properties used in the optimization
 B_r = 1.3756; % remanent flux density [T] (mid-magnet)
 B_rs = 1.3756; % remanent flux density [T] (side-magnets)
 mu_r = 1.04; % PM recoil permeability [-]
@@ -62,6 +47,7 @@ H_int = (B_r-mu_0*mu_rc*H_c)/(mu_0*(mu_rc-mu_r));
 B_int = mu_0*mu_rc*(H_int+H_c);
 % B_knee = B_r - abs(mu_0*mu_r*H_c);
 B_knee = B_int;
+%% ------------------------------------------------------------------------
 
 % machine/magnets configuration parameters
 Halbach = 0; % set 0 for even segments and 1 for odd segmens arrays 

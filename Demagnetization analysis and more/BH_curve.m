@@ -8,10 +8,10 @@ filename = 'N55@120C';
 
 CELL = readcell('PM_data.csv');
 
-% if any(any(strcmp(CELL,filename)))
-%     msg = 'Material data already stored.';
-%     error(msg)
-% else % Upload PM data
+if any(any(strcmp(CELL,filename)))
+    msg = 'Material data already stored.';
+    error(msg)
+else % Upload PM data
 
 
 
@@ -21,28 +21,6 @@ B=importdata(['PM_data\' filename '.tab'],'\t');
 
 
 %% PROCESSING DATA (TWO SEGMENTS CURVE)
-% Operations on the intrinsic curve
-% BH_int = A.data;
-% 
-% v_int = interp1(BH_int(:,2),BH_int(:,1),linspace(BH_int(1,2),BH_int(end,2),1000));
-% NEW_int = [linspace(BH_int(1,2),BH_int(end,2),1000)' v_int'];
-% mu_NEW_int = (diff(NEW_int(:,1))./diff(NEW_int(:,2)))./(4*pi*1e-7);
-% Hc_NEW_int = interp1(NEW_int(:,1),NEW_int(:,2),0);
-% mu_r_test_int = mu_NEW_int(find(mu_NEW_int> 1,1,'last'));
-% variation_int = abs(mu_NEW_int-mu_r_test_int)./mu_r_test_int*100;
-% % H_knee_int = NEW_int(find(variation_int> 50,1,'last'),2); % found when the recoil permeability changes more than 50%
-% 
-% B20_int = interp1(NEW_int(:,2),NEW_int(:,1),0.2*Hc_NEW_int);
-% B70_int = interp1(NEW_int(:,2),NEW_int(:,1),0.7*Hc_NEW_int);
-% mu_r_ARNOLD_int = (B20_int-B70_int)/(0.2*Hc_NEW_int-0.7*Hc_NEW_int)/(4*pi*1e-7);
-% 
-% B0925_line_int = 0.925*NEW_int(end,1)+NEW_int(:,2)*mu_r_ARNOLD_int*4*pi*1e-7;
-% ind = sign(NEW_int(:,1)-B0925_line_int);
-% H_knee_new_int = NEW_int(find(ind> -1,1,'first'),2);
-% figure;plot(NEW_int(:,2),NEW_int(:,1))
-% hold on
-% plot(NEW_int(:,2),B0925_line_int)
-
 % Operations on the normal curve
 BH = B.data;
 B_r = BH(end,2);
@@ -94,7 +72,7 @@ plot(linspace(start_knee,0,1000),linspace(start_knee,0,1000)*mu_r_ARNOLD*4*pi*1e
 data = {filename,B_r,round(mu_r_ARNOLD,5),round(B_knee2,5),round(B_demag,5)};
 fileID = 'PM_data.csv';
 writecell(data,fileID,'WriteMode','append')
-% end
+end
 % writecell({'PM_material','B_r','mu_rec','B_knee','B_dem'},fileID)
 
 
