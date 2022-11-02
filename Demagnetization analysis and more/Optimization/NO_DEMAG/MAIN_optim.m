@@ -1,4 +1,4 @@
-%% ANALYTICAL FIELD SOLUTION FROM PM (SCRIPT)
+%% PSO parameters limits and objectives definition
 
 % Matteo Leandro
 % matteo.leandro@ntnu.no
