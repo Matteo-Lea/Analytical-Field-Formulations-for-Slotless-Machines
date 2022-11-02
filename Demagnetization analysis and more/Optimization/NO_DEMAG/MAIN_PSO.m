@@ -1,36 +1,4 @@
 % ----------------------------------------------------------------------- %
-% Function MOPSO performs a Multi-Objective Particle Swarm Optimization   %
-% over continous functions.                                               %
-%                                                                         %
-%   Input parameters:                                                     %
-%       - params:   Struct that contains the customized parameters.       %
-%           * params.Np:        Number of particles.                      %
-%           * params.Nr:        Repository size (in particles).           %
-%           * params.maxgen:    Maximum number of generations.            %
-%           * params.W:         Inertia coefficient.                      %
-%           * params.C1:        Personal confidence factor.               %
-%           * params.C2:        Swarm confidence factor.                  %
-%           * params.ngrid:     Number of hypercubes in each dimension.   %
-%           * params.maxvel:    Maximum velocity (search space percentage)%
-%           * params.u_mut:     Uniform mutation percentage.              %
-%       - MultiObj: Struct that contains the parameters relative to the   %
-%                   optimization functions.                               %
-%           * MultiObj.fun:     Anonymous multi-obj function to minimize. %
-%           * MultiObj.nVar:    Number of variables.                      %
-%           * MultiObj.var_min: Vector that indicates the minimum values  %
-%                               of the search space in each dimension.    %
-%           * MultiObj.var_max: Same than 'var_min' with the maxima.      %
-% ----------------------------------------------------------------------- %
-%   For an example of use, run 'example.m'.                               %
-% ----------------------------------------------------------------------- %
-%   Author:  Victor Martinez Cagigal                                      %
-%   Date:    17/03/2017                                                   %
-%   E-mail:  vicmarcag (at) gmail (dot) com                              %
-%   Version: 1.1                                                          %
-%   Log:                                                                  %
-%           - 1.0:  Initial version without mutation [1] (15/03/2017).    %
-%           - 1.1:  Crowding and mutation are implemented [2].            %
-% ----------------------------------------------------------------------- %
 %   References:                                                           %
 %    [1]Coello, C. A. C., Pulido, G. T., & Lechuga, M. S. (2004). Handling%
 %       multiple objectives with particle swarm optimization. IEEE Tran-  %
