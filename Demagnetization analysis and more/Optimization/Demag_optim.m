@@ -42,11 +42,7 @@ B_r = 1.3756; % remanent flux density [T] (mid-magnet)
 B_rs = 1.3756; % remanent flux density [T] (side-magnets)
 mu_r = 1.04; % PM recoil permeability [-]
 mu_rc = 7.969; % PM coercive permeability (from knee-point to Hc)
-H_c = 760*1e3; % PM hysteresis curve coercivity [A/m]
-H_int = (B_r-mu_0*mu_rc*H_c)/(mu_0*(mu_rc-mu_r));
-B_int = mu_0*mu_rc*(H_int+H_c);
-% B_knee = B_r - abs(mu_0*mu_r*H_c);
-B_knee = B_int;
+B_knee = 0.39429;
 %% ------------------------------------------------------------------------
 
 % machine/magnets configuration parameters
@@ -66,16 +62,6 @@ elseif mod(Halbach_1,2)==0 && Halbach==1
            ' change either of the following values:\n',...
            ' Halbach or Halbach_1"']);
 end
-
-B_r = 1.3756; % remanent flux density [T] (mid-magnet)
-B_rs = 1.3756; % remanent flux density [T] (side-magnets)
-mu_r = 1.04; % PM recoil permeability [-]
-mu_rc = 7.969; % PM coercive permeability (from knee-point to Hc)
-H_c = 760*1e3; % PM hysteresis curve coercivity [A/m]
-H_int = (B_r-mu_0*mu_rc*H_c)/(mu_0*(mu_rc-mu_r));
-B_int = mu_0*mu_rc*(H_int+H_c);
-% B_knee = B_r - abs(mu_0*mu_r*H_c);
-B_knee = B_int;
 
 
 if Halbach_1 == 2 && alpha_p ==0
