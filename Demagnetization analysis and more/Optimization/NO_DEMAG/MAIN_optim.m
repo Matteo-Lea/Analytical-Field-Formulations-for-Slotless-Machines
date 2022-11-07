@@ -33,7 +33,7 @@ Var_max = [ alpha_p_lim(2), l_a_lim(2), R_s_lim(2), ...
 % Definition of the integers variables in the optimization
 In_Out_lim = [1, 1];
 In_Out_adm = 1; % number of admissible values for the variable In_Out
-p_lim = [3, 19];
+p_lim = [15, 15];
 p_adm = p_lim(2)-p_lim(1)+1; % number of admissible values for the variable p
 
 Int_min = [In_Out_lim(1), p_lim(1)].*ones(el,1);
