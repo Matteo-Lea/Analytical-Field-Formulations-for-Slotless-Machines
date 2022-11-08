@@ -66,16 +66,16 @@ function REP = MAIN_PSO(params,params_mach,Var_max,Var_min,Int_min,Int_max,Const
     
     [M_r_n,M_theta_n] = Magnetization(el,m_PM,x,Const);
     [t_bi,peak,T_avg,t_spec,Magnets_weight,Joule,Tot_weight,Weighted_Perc_demag,Weight_mid,Weight_side] = Field_Solution_Demag(el,m_PM,r_dis,x,params_geo,M_r_n,M_theta_n,params_mach,Const);
+    % In this block of code the objective function(s) is(are) defined,
+    % but beware! If you want to change objecctive function(s) you will
+    % have to redefine it(them) at line 190 by copy pasting the next lines
+    % under the same comment
     f_lim = [ T_avg, peak,Weighted_Perc_demag];
     f_lim_1 = [ max(abs(f_lim(:,1)-Constraints(1))-toll*Constraints(1),0), max(f_lim(:,2)-Constraints(2),0)];
-%     f_lim_2 = p_f*max(f_lim(:,3)-Constraints(3),0);
-
-        % multiple objective optimization example
-%         f = [Tot_weight + sum(f_lim_1,2),Weighted_Perc_demag];
-        % single objective optimization example
-         f = Tot_weight + sum(f_lim_1,2)+Weighted_Perc_demag;
-        % functions to be saved [specific torque, active weight, back-iron thickness] 
-        real = [ -t_spec,Tot_weight,t_bi];
+    f = Tot_weight + sum(f_lim_1,2)+Weighted_Perc_demag;
+    real = [ -t_spec,Tot_weight,t_bi];
+    %----------------------------------------------------------------------
+    
     % Initialization
     POS = x;
     VEL = zeros(Np,nVar-int); % velocity is solely for the non-integer variables
@@ -185,22 +185,16 @@ function REP = MAIN_PSO(params,params_mach,Var_max,Var_min,Int_min,Int_max,Const
         
         % Evaluate the population
         [M_r_n,M_theta_n] = Magnetization(el,m_PM,POS,Const);
-        tic
         [t_bi,peak,T_avg,t_spec,Magnets_weight,Joule,Tot_weight,Weighted_Perc_demag,Weight_mid,Weight_side] =  Field_Solution_Demag(el,m_PM,r_dis,POS,params_geo,M_r_n,M_theta_n,params_mach,Const);
-        toc
+        
+        % In this block of code the objective function(s) is(are) defined,
+        % but beware! This is the part of code imported from line 72 if
+        % this changes, the same change must be reported on top!
         f_lim = [ T_avg, peak,Weighted_Perc_demag];
         f_lim_1 = [ max(abs(f_lim(:,1)-Constraints(1))-toll*Constraints(1),0), max(f_lim(:,2)-Constraints(2),0)];
-%         f_lim_2 = p_f*max(f_lim(:,3)-Constraints(3),0);
-
-        % multiple objective optimization example
-%         f = [Tot_weight + sum(f_lim_1,2),Weighted_Perc_demag];
-        % single objective optimization example
-         f = Tot_weight + sum(f_lim_1,2)+Weighted_Perc_demag;
-        % functions to be saved [specific torque, active weight, back-iron thickness] 
+        f = Tot_weight + sum(f_lim_1,2)+Weighted_Perc_demag;
         real = [ -t_spec,Tot_weight,t_bi];
-
-        
-        
+        %----------------------------------------------------------------------
         POS_fit = f;
         
         % Update the repository

@@ -68,23 +68,18 @@ function REP = Optimizer(params,params_mach,Var_max,Var_min,Int_min,Int_max,Cons
     
     [M_r_n,M_theta_n] = Magnetization(el,m_PM,x,Const);
     [t_bi,peak,T_avg,t_spec,Magnets_weight,Joule,Tot_weight] = Field_Solution(el,m_PM,x,params_geo,M_r_n,M_theta_n,params_mach);
+    
+    % In this block of code the objective function(s) is(are) defined,
+    % but beware! If you want to change objecctive function(s) you will
+    % have to redefine it(them) at line 193 by copy pasting the next lines
+    % under the same comment
     f_lim = [ T_avg, peak];
-%     f_lim_1 = [ max(abs(f_lim(:,1)-Constraints(1))-toll*Constraints(1),0), max(abs(f_lim(:,2)-Constraints(2))-toll*Constraints(2),0)];
     f_lim_1 = [ max(abs(f_lim(:,1)-Constraints(1))-toll*Constraints(1),0), max(f_lim(:,2)-Constraints(2),0)];
-%     f_lim_1 = [ max(abs(f_lim(:,1)-Constraints(1))-toll*Constraints(1),0), max(abs(Constraints(2)-f_lim(:,2))-toll*Constraints(2),0)];
-%         f_lim_1 = [ abs(f_lim(:,1)-Constraints(1)), abs(f_lim(:,2)-Constraints(2))];
-%         f = [ -t_spec,Tot_weight, sum(f_lim_1,2)];
-        f = Tot_weight + sum(f_lim_1,2);
-%     f = [Tot_weight , sum(f_lim_1,2)];
-%     weight_f = [2 1];
-%     f = [abs(params_mach.B_sat-B_bi).^2+ abs(params_mach.B_sat-B_sleeve).^2, -t_spec,Tot_weight];
-%     f = [abs(params_mach.B_sat-B_bi)+ abs(params_mach.B_sat-B_sleeve), -t_spec./Joule];
-%     f = [abs(params_mach.B_sat-B_bi).^2+abs(params_mach.B_sat-B_sleeve).^2, -t_spec./Joule ,sqrt(sum(E_n(:,2:end).^2,2))./abs(E_n(:,1))*100];
-%     f = f.*weight_f;
-%     f = [ abs(params_mach.B_sat-B_bi).^2+ abs(params_mach.B_sat-B_sleeve).^2,Magnets_weight, abs(T_avg-1600).^2];
-%     f = [abs(params_mach.B_sat-B_bi), abs(params_mach.B_sat-B_sleeve)];
-    % Initialization
+    f = Tot_weight + sum(f_lim_1,2); % this is what we are optimizing
     real = [ -t_spec,Tot_weight,t_bi];
+    %----------------------------------------------------------------------
+    
+    % Initialization
     POS = x;
     VEL = zeros(Np,nVar-int); % velocity is solely for the non-integer variables
     POS_fit  = f;
@@ -194,26 +189,15 @@ function REP = Optimizer(params,params_mach,Var_max,Var_min,Int_min,Int_max,Cons
         
         [M_r_n,M_theta_n] = Magnetization(el,m_PM,POS,Const);
         [t_bi,peak,T_avg,t_spec,Magnets_weight,Joule,Tot_weight] = Field_Solution(el,m_PM,POS,params_geo,M_r_n,M_theta_n,params_mach);
-        f_lim = [ T_avg, peak];
-%         f_lim_1 = [ max(abs(f_lim(:,1)-Constraints(1))-toll*Constraints(1),0), max(abs(f_lim(:,2)-Constraints(2))-toll*Constraints(2),0)];
-        f_lim_1 = [ max(abs(f_lim(:,1)-Constraints(1))-toll*Constraints(1),0), max(f_lim(:,2)-Constraints(2),0)];
-%         f_lim_1 = [ abs(f_lim(:,1)-Constraints(1)), abs(f_lim(:,2)-Constraints(2))];
-%         f = [ -t_spec,Tot_weight, sum(f_lim_1,2)];
-        f = Tot_weight + sum(f_lim_1,2);
-%         f = [Tot_weight , sum(f_lim_1,2)];
-%         f = [ -T_avg, Tot_weight];
-        real = [ -t_spec,Tot_weight,t_bi];
         
-%         f = [ abs(params_mach.B_sat-B_bi).^2+ abs(params_mach.B_sat-B_sleeve).^2,Magnets_weight, abs(T_avg-1600).^2];
-
-%         f = [abs(params_mach.B_sat-B_bi) + abs(params_mach.B_sat-B_sleeve), -t_spec./Joule ];
-%           f = [abs(params_mach.B_sat-B_bi)+ abs(params_mach.B_sat-B_sleeve), -t_spec, -T_avg];
-%         f = [abs(params_mach.B_sat-B_bi).^2+abs(params_mach.B_sat-B_sleeve).^2, -t_spec./Joule ,sqrt(sum(E_n(:,2:end).^2,2))./(abs(E_n(:,1)))*100];
-%         f = [abs(params_mach.B_sat-B_bi).^2,abs(params_mach.B_sat-B_sleeve).^2, -t_spec./Joule ];
-%           f = [abs(params_mach.B_sat-B_bi).^2+ abs(params_mach.B_sat-B_sleeve).^2, -t_spec, Tot_weight];
-%             f = f.*weight_f;
-%         f = [ Magnets_weight , -T_avg./Magnets_weight];
-%         f = [abs(params_mach.B_sat-B_bi), abs(params_mach.B_sat-B_sleeve)];
+        % In this block of code the objective function(s) is(are) defined,
+        % but beware! This is the part of code imported from line 72 if
+        % this changes, the same change must be reported on top!
+        f_lim = [ T_avg, peak];
+        f_lim_1 = [ max(abs(f_lim(:,1)-Constraints(1))-toll*Constraints(1),0), max(f_lim(:,2)-Constraints(2),0)];
+        f = Tot_weight + sum(f_lim_1,2); % this is what we are optimizing
+        real = [ -t_spec,Tot_weight,t_bi];
+        %----------------------------------------------------------------------
         POS_fit = f;
         
         % Update the repository
