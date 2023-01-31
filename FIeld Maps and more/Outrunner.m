@@ -1,31 +1,12 @@
 %% outrunner example
-% l_a = 0.1; % active lenght [m]
-% R_r = (198/2)*1e-3; % outer rotor radius (inner magnets radius) [m]
-% R_m = (187/2)*1e-3; % magnets array outer radius [m]
-% R_w = (185/2)*1e-3; % winding radius [m]
-% R_wi = (182/2)*1e-3; % winding radius [m]
-% R_s = (180/2)*1e-3; % stator radius [m]
-% R_se = (177/2)*1e-3; % outer stator radius [m]
-% R_i = Inf;
-% g = abs(R_w-R_m); % air-gap thickness [m]
-% R_1 = R_m -g/2; % mid-air-gap radius [m]
-% R_2 = R_s/2+R_se/2; % mid-stator radius
-% % machine/magnets configuration parameters
-% B_r = 1.4; % remanent flux density [T] (mid-magnet)
-% B_rs = 1.4; % remanent flux density [T] (side-magnets)
-% mu_r = 1.0; % PM recoil permeability [-]
-% alpha_p = 0.5; % mid-magnet to pole ratio [-]
-% alpha_p1 = 0.7; % side-magnets + mid-magnet to pole ratio [-]  
-% p = 26; % pole pairs
 
-
-% X100
+% test outrunner
 l_a =   0.03; % active lenght [m]
 R_r = (0.097/2); % outer rotor radius (inner magnets radius) [m]
-R_m = (0.0882/2); % magnets array outer radius [m]
+R_m = (0.088/2); % magnets array outer radius [m]
 R_w = (0.087/2); % winding radius [m]
-R_s = (0.0804/2); % stator radius [m]
-R_wi = (0.0816/2); % winding radius [m]
+R_s = (0.08/2); % stator radius [m]
+R_wi = (0.082/2); % winding radius [m]
 % R_s = R_wi; % winding radius [m]
 R_se = (0.078/2); % outer stator radius [m]
 R_i = Inf; % Iron boundary radius facing the magnets
