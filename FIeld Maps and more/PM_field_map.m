@@ -17,10 +17,9 @@
 % circumferential discretization.
 
 %% Machine parameters
-clearvars
+clearvars -except runs
 clc
 close all
-tic
 mu_0 = 4*pi*1e-7; % air permeability
 
 
@@ -31,36 +30,40 @@ Inrunner
 % Outrunner
 
 %% RADIAL DISCRETIZATION 
+
+mapping = "no";
+torque = "no";
+back_emf = "no";
 if R_s>R_m %  inrunner
-% r = linspace(R_m,R_s,200)'; % radius at which the flux density is to be evaluated
-r = (R_m:0.1*1e-3:R_s)'; % radius at which the flux density is to be evaluated
-r_m = linspace(R_r,R_m,50)'; % radius at which the flux density is to be evaluated
+r = linspace(R_m,R_s,20)'; % radius at which the flux density is to be evaluated
+% r = (R_m:0.1*1e-3:R_s)'; % radius at which the flux density is to be evaluated
+r_m = linspace(R_r,R_m,20)'; % radius at which the flux density is to be evaluated
 r_s = linspace(R_s,R_se,10)';
 elseif R_s<R_m %  outrunner
-r = linspace(R_s,R_m,50)'; % radius at which the flux density is to be evaluated
-r_m = linspace(R_m,R_r,50)'; % radius at which the flux density is to be evaluated
-r_s = linspace(R_se,R_s,50)';
+r = linspace(R_s,R_m,20)'; % radius at which the flux density is to be evaluated
+r_m = linspace(R_m,R_r,20)'; % radius at which the flux density is to be evaluated
+r_s = linspace(R_se,R_s,10)';
 end
 
 if R_i == R_r %iron backing
     if R_s >R_m % inrunner
         R_ie = 0.95*R_r;
-        r_ext = linspace(R_ie,R_r,50)';
+        r_ext = linspace(R_ie,R_r,20)';
     else % outrunner
         R_ie = 1.1*R_r; 
-        r_ext = linspace(R_r,R_ie,50)';
+        r_ext = linspace(R_r,R_ie,20)';
     end
 else % no iron backing
     if R_s >R_m % inrunner
         R_ie = R_r-0.25*pi*R_r/p;
-        r_ext = linspace(R_ie,R_r,50)';
+        r_ext = linspace(R_ie,R_r,20)';
     else % outrunner
         R_ie = R_r+0.5*pi*R_r/p;
-        r_ext = linspace(R_r,R_ie,50)';
+        r_ext = linspace(R_r,R_ie,20)';
     end
 end
 %% useful indices for series harmonics definition
-m_PM = 1000; % number of harmonics or series components tionfor the magnetization functions
+m_PM = 300; % number of harmonics or series components tionfor the magnetization functions
 x = 0:1:m_PM;
 % x = linspace(0,40,m_PM+1);
 n = p*(2*x+1); % existing harmonic series components (n=1,3,5,...)
@@ -68,7 +71,7 @@ n = p*(2*x+1); % existing harmonic series components (n=1,3,5,...)
 sigma = (sin(pi*n./n(end))./(pi*n./n(end))).^3; % Lanczos sigma for Gibbs phenomenon reduction
 %% circumferential discretization
 sec = 1;                                                                    % number of poles to be modeled
-m_th = 1000*sec;                                                            % points along the modeled sector
+m_th = 100*sec;                                                            % points along the modeled sector
 % mechanical angle
 theta = linspace(0,sec*pi/(p),m_th)-pi/(2*p)*sec; % circumferential discretization (leave the -pi/(2*p))
 
@@ -261,21 +264,23 @@ T = -p/omega*(emf_a*I.*cos(p*theta./sec+theta_i)+emf_b*I.*cos(p*theta./sec-2*pi/
 
 T_avg = -p/omega*3/2*E_n(1)*I;
 
-
-figure
-hold on
-plot(theta./sec,emf_a)
-plot(theta./sec,emf_b)
-plot(theta./sec,emf_c)
-title('E_{ph}')
-grid on
-
-figure
-hold on
-plot(theta./sec,T)
-plot(theta./sec,linspace(T_avg,T_avg,m_th))
-title('T_{em}')
-grid on
+if contains(back_emf, 'yes')
+    figure
+    hold on
+    plot(theta./sec,emf_a)
+    plot(theta./sec,emf_b)
+    plot(theta./sec,emf_c)
+    title('E_{ph}')
+    grid on
+end
+if contains(torque, 'yes')
+    figure
+    hold on
+    plot(theta./sec,T)
+    plot(theta./sec,linspace(T_avg,T_avg,m_th))
+    title('T_{em}')
+    grid on
+end
 
 
 else % OUTRUNNER winding/air-gap region field compuatation
@@ -313,24 +318,27 @@ T_avg = -p/omega*3/2*E_n(1)*I;
 % 
 % T_RFF = -p/omega*(emf_a_RFF*I.*cos(p*theta+theta_i)+emf_b_RFF*I.*cos(p*theta-2*pi/3+theta_i)+emf_c_RFF*I.*cos(p*theta-4*pi/3+theta_i));
 
+if contains(back_emf, 'yes')
+    figure
+    hold on
+    plot(theta./sec,emf_a)	
+    plot(theta./sec,emf_b)
+    plot(theta./sec,emf_c)
+    xlim([-pi/(2*p) pi/(2*p)]*sec)
+    xticks(linspace(-pi/(2*p)*sec,pi/(2*p)*sec,3*sec+1))
+    xticklabels({'0','\pi/3','2\pi/3','\pi'})
+    title('E_{ph}')
+    grid on
+end
 
-figure
-hold on
-plot(theta./sec,emf_a)	
-plot(theta./sec,emf_b)
-plot(theta./sec,emf_c)
-xlim([-pi/(2*p) pi/(2*p)]*sec)
-xticks(linspace(-pi/(2*p)*sec,pi/(2*p)*sec,3*sec+1))
-xticklabels({'0','\pi/3','2\pi/3','\pi'})
-title('E_{ph}')
-grid on
-
+if contains(torque, 'yes')
 figure
 hold on
 plot(theta./sec,T)
 plot(theta./sec,linspace(T_avg,T_avg,m_th))
 title('T_{em}')
 grid on
+end
 
 end
 
@@ -519,7 +527,8 @@ else %  OUTRUNNER back-magnets region field computation
     end
 end
 
-toc
+
+if contains(mapping, 'yes')
 % Create polar data
 [r,t] = meshgrid(r,theta);
 [r_m,t_m] = meshgrid(r_m,theta);
@@ -677,5 +686,6 @@ axis off
 axis image
 title({'Flux density norm map and isopotential lines',' in the whole 2D domain (optimal formulation)'})
     
+end
 end
 
