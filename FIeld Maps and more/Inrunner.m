@@ -6,8 +6,8 @@ R_r = (78/2)*1e-3; % outer rotor radius (inner magnets radius) [m]
 R_m = (83/2)*1e-3; % magnets array outer radius [m]
 R_w = (84/2)*1e-3; % winding radius [m]
 R_s = (87/2)*1e-3; % stator radius [m]
-R_wi = (87/2)*1e-3; % winding radius [m]
-% R_s = R_wi; % winding radius [m]
+R_ws = (87/2)*1e-3; % winding radius [m]
+% R_s = R_ws; % winding radius [m]
 % R_se = (89.68/2)*1e-3; % outer stator radius [m]
 R_se = (90/2)*1e-3; % outer stator radius [m]
 R_i = 0; % Iron boundary radius facing the magnets
@@ -75,11 +75,11 @@ else
     theta_m_end = theta_m_end; % orientation angle end-side-magnet [deg]
 end
 
-S_Ph = abs(pi*(R_wi^2-R_w^2)/(6*p)); % phase belt cross section
+S_Ph = abs(pi*(R_ws^2-R_w^2)/(6*p)); % phase belt cross section
 N_tc = 3; % number of conductors per coil
 q = 1; %coils per pole and per phase
 b = 1; % parallel ways per phase
-I = 1; % phase current peak value [A]
+I = 20; % phase current peak value [A]
 n_cs = N_tc*q/b;
 omega = 1000*2*pi/60*p; % mechanical angular frequency [rad/s]
 

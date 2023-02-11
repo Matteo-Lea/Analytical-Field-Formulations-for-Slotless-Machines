@@ -4,23 +4,28 @@
 % matteo.leandro@ntnu.no
 % VERSION: 14Jan2021
 
-% This code applies the analytical armature field solution to find the
-% synchronous inductance of any slotless topology under the assumptions of
-% linearmaterial properties and unitary PM relative permeability
+% This code finds the field solution in any region of a 2-D section of a
+% slotless machine, in terms of flux density distribution and one-compoment
+% vector potential. The field solution in the airgap and magnets region was
+% tested for both inrunner and outrunner topology. The solution treats
+% solely the case with unitary magnets permeability. Air-cored topologies
+% can be studied. Singolarities are treated as well. The iron permeability
+% is assumed infinity
 
 
 %% Machine parameters
-clearvars
-clc
-close all
+% clearvars
+% clc
+% close all
 
 mu_0 = 4*pi*1e-7; % air permeability
 
+run(top)
 %% inrunner example
 % Inrunner
 
 %% outrunner example
-Outrunner
+% Outrunner
 %% useful indices for series harmonics definition
 m_J = 20;                                                                  % the total number of harmonics will be 2*(m_J+1)
 x = 0:1:m_J;
@@ -29,6 +34,19 @@ y = x+1;
 % current harmonics order
 m = p*(2*x+1); % existing single-phase harmonic series components (n=1,3,5,...)
 
+% sigma_n = (sin(pi*m./m(end))./(pi*m./m(end))).^3;
+
+
+% sigma_m = [sigma_h,sigma_k];
+% sigma_m = sigma_n;
+%% circumferential discretization
+
+% sec = 2;                                                                    % number of poles to be modeled
+% m_th = 1000*sec;                                                            % points along the modeled sector
+% mechanical angle
+% theta = linspace(0,sec*pi/(p),m_th);
+% Theta = repmat(theta,2*(m_J+1),1);
+% Theta = repmat(theta,(m_J+1),1);
 
 %% Current density distribution
 I_tot = N_tc*q*I/b;                                                         % total current through the phase belt
@@ -88,8 +106,9 @@ if R_s>R_m %  inrunner
     L_self = sum(FLUX_self)/I;
     L_mut = sum(FLUX_mut)/I;
     L_sync = L_self + L_mut;
-    pitch = pi* (R_w+R_wi)/(2*p);
-    Ls_ew = mu_0*pitch/2*1.428*n_cs^2*p;
+    pitch = pi* (2*R_w+2*R_wi)/2/p;
+    Ls_ew = 4*pi*1e-7*pitch/2*1.428*n_cs^2*p/2;
+    L_ph = (Ls_ew+L_sync);
     L_star = 2*(Ls_ew+L_sync);
     
 else % outrunner
@@ -119,8 +138,9 @@ else % outrunner
     L_self = sum(FLUX_self)/I;
     L_mut = sum(FLUX_mut)/I;
     L_sync = L_self + L_mut;
-    pitch = pi* (R_w+R_wi)/(2*p);
-    Ls_ew = mu_0*pitch/2*1.428*n_cs^2*p;
+    pitch = pi* (2*R_w+2*R_wi)/2/p;
+    Ls_ew = 4*pi*1e-7*pitch/2*1.428*n_cs^2*p/2;
+    L_ph = (Ls_ew+L_sync);
     L_star = 2*(Ls_ew+L_sync);
  
 end

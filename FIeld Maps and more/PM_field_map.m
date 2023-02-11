@@ -33,7 +33,7 @@ Inrunner
 
 mapping = "no";
 torque = "no";
-back_emf = "no";
+back_emf = "yes";
 if R_s>R_m %  inrunner
 r = linspace(R_m,R_s,20)'; % radius at which the flux density is to be evaluated
 % r = (R_m:0.1*1e-3:R_s)'; % radius at which the flux density is to be evaluated
@@ -70,7 +70,7 @@ n = p*(2*x+1); % existing harmonic series components (n=1,3,5,...)
 
 sigma = (sin(pi*n./n(end))./(pi*n./n(end))).^3; % Lanczos sigma for Gibbs phenomenon reduction
 %% circumferential discretization
-sec = 1;                                                                    % number of poles to be modeled
+sec = p;                                                                    % number of poles to be modeled
 m_th = 100*sec;                                                            % points along the modeled sector
 % mechanical angle
 theta = linspace(0,sec*pi/(p),m_th)-pi/(2*p)*sec; % circumferential discretization (leave the -pi/(2*p))
@@ -214,14 +214,14 @@ G_Sn = 2*K_Bn./((R_s/R_se).^(2*n)-1);
 
 G_Sn_out = 2*K_Bn_out./(1-(R_se/R_s).^(2*n));
 
-C = (R_m/R_s).^(n).*(R_wi^2*(R_wi/R_s).^(n)-R_w^2*(R_w/R_s).^(n))./((n+2)*R_m)+(R_wi^2*(R_m/R_wi).^(n)-R_w^2*(R_m/R_w).^(n))./((2-n)*R_m);
+C = (R_m/R_s).^(n).*(R_ws^2*(R_ws/R_s).^(n)-R_w^2*(R_w/R_s).^(n))./((n+2)*R_m)+(R_ws^2*(R_m/R_ws).^(n)-R_w^2*(R_m/R_w).^(n))./((2-n)*R_m);
 
-C_out = (R_w^2*(R_w/R_m).^(n)-R_wi^2*(R_wi/R_m).^(n))./((n+2)*R_m)+(R_w^2/R_s*(R_s/R_w).^(n)-R_wi^2/R_s*(R_s/R_wi).^(n))./(2-n).*(R_s/R_m).^(n+1);
+C_out = (R_w^2*(R_w/R_m).^(n)-R_ws^2*(R_ws/R_m).^(n))./((n+2)*R_m)+(R_w^2/R_s*(R_s/R_w).^(n)-R_ws^2/R_s*(R_s/R_ws).^(n))./(2-n).*(R_s/R_m).^(n+1);
 
 % the back-emf integral exhibits a singularity for np = 2
 if p == 2
-    C(1) = R_m.*log(R_wi./R_w) + R_m./(4*R_s.^4).*(R_wi.^4-R_w.^4);
-    C_out(1) = 1./R_m.^3.*(R_s.^4.*log(R_w./R_wi)+R_w.^4/4-R_wi.^4/4);
+    C(1) = R_m.*log(R_ws./R_w) + R_m./(4*R_s.^4).*(R_ws.^4-R_w.^4);
+    C_out(1) = 1./R_m.^3.*(R_s.^4.*log(R_w./R_ws)+R_w.^4/4-R_ws.^4/4);
 end
 
 
@@ -308,7 +308,7 @@ T = -p/omega*(emf_a*I.*cos(p*theta./sec+theta_i)+emf_b*I.*cos(p*theta./sec-2*pi/
 
 T_avg = -p/omega*3/2*E_n(1)*I;
 
-% E_n_prime = (((R_m.^(n).*(-R_m.^(2.*n+1).*(mu_r-1).*(n.*A_zm_n-mu_0.*M_theta_n-A_zm_n)-R_m.*R_r.^(2.*n).*(mu_r+1).*(n.*A_zm_n+mu_0.*M_theta_n+A_zm_n)+2.*R_m.^(n).*R_r.^(1+n).*(A_zm_n+mu_r.*n.*A_zm_n+mu_0.*M_theta_n)))./(n.*(R_m.^(4.*n).*(mu_r-1)^2-R_m.^(2.*n).*R_r.^(2.*n).*(mu_r+1)^2-R_s.^(2.*n).*R_m.^(2.*n).*(mu_r+1).*(mu_r-1)+R_s.^(2.*n).*R_r.^(2.*n).*(mu_r-1).*(mu_r+1))))./(n+2).*(R_w.^(n+2)-R_wi.^(n+2))+R_s.^(2.*n).*((R_m.^(n).*(-R_m.^(2.*n+1).*(mu_r-1).*(n.*A_zm_n-mu_0.*M_theta_n-A_zm_n)-R_m.*R_r.^(2.*n).*(mu_r+1).*(n.*A_zm_n+mu_0.*M_theta_n+A_zm_n)+2.*R_m.^(n).*R_r.^(1+n).*(A_zm_n+mu_r.*n.*A_zm_n+mu_0.*M_theta_n)))./(n.*(R_m.^(4.*n).*(mu_r-1)^2-R_m.^(2.*n).*R_r.^(2.*n).*(mu_r+1)^2-R_s.^(2.*n).*R_m.^(2.*n).*(mu_r+1).*(mu_r-1)+R_s.^(2.*n).*R_r.^(2.*n).*(mu_r-1).*(mu_r+1))))./(2-n).*(R_w.^(2-n)-R_wi.^(2-n)));
+% E_n_prime = (((R_m.^(n).*(-R_m.^(2.*n+1).*(mu_r-1).*(n.*A_zm_n-mu_0.*M_theta_n-A_zm_n)-R_m.*R_r.^(2.*n).*(mu_r+1).*(n.*A_zm_n+mu_0.*M_theta_n+A_zm_n)+2.*R_m.^(n).*R_r.^(1+n).*(A_zm_n+mu_r.*n.*A_zm_n+mu_0.*M_theta_n)))./(n.*(R_m.^(4.*n).*(mu_r-1)^2-R_m.^(2.*n).*R_r.^(2.*n).*(mu_r+1)^2-R_s.^(2.*n).*R_m.^(2.*n).*(mu_r+1).*(mu_r-1)+R_s.^(2.*n).*R_r.^(2.*n).*(mu_r-1).*(mu_r+1))))./(n+2).*(R_w.^(n+2)-R_ws.^(n+2))+R_s.^(2.*n).*((R_m.^(n).*(-R_m.^(2.*n+1).*(mu_r-1).*(n.*A_zm_n-mu_0.*M_theta_n-A_zm_n)-R_m.*R_r.^(2.*n).*(mu_r+1).*(n.*A_zm_n+mu_0.*M_theta_n+A_zm_n)+2.*R_m.^(n).*R_r.^(1+n).*(A_zm_n+mu_r.*n.*A_zm_n+mu_0.*M_theta_n)))./(n.*(R_m.^(4.*n).*(mu_r-1)^2-R_m.^(2.*n).*R_r.^(2.*n).*(mu_r+1)^2-R_s.^(2.*n).*R_m.^(2.*n).*(mu_r+1).*(mu_r-1)+R_s.^(2.*n).*R_r.^(2.*n).*(mu_r-1).*(mu_r+1))))./(2-n).*(R_w.^(2-n)-R_ws.^(2-n)));
 % E_n_prime = -n_cs*l_a/S_Ph*omega*4*E_n_prime.*sin(n/p*pi/6);
 % E_n_prime(isnan(E_n_prime))=0; % higher order harmonics are not represented in Matlab double precision floating point representation (NaN numbers are therefore zeroed out)
 % E_n_prime(isinf(E_n_prime))=0; % higher order harmonics are not represented in Matlab double precision floating point representation (Inf numbers are therefore zeroed out)
@@ -574,23 +574,14 @@ plot(R_r*sin(linspace(theta(1),theta(end),100)),R_r*cos(linspace(theta(1),theta(
 plot(R_m*sin(linspace(theta(1),theta(end),100)),R_m*cos(linspace(theta(1),theta(end),100)),'linewidth',0.8,'color','k');
 plot(R_s*sin(linspace(theta(1),theta(end),100)),R_s*cos(linspace(theta(1),theta(end),100)),'linewidth',0.8,'color','k');
 plot(R_se*sin(linspace(theta(1),theta(end),100)),R_se*cos(linspace(theta(1),theta(end),100)),'linewidth',0.8,'color','k');
-% Iron discretization
-% dis = 4; % points along the radial direction of the stator core (R_s and R_s included);
-% r_dis = linspace(R_s,R_se,dis); % discretized stator core line
-% delta_r = r_dis(2)-r_dis(1); % width of each sub-segment
-% r_mid = linspace(R_s+delta_r/2,R_se-delta_r/2,dis-1); % mid-point radius for each sub-segment
-% plot([R_s*sin(0);R_se*sin(0)],[R_s*cos(0);R_se*cos(0)],'linewidth',1.5,'color','r');
-% plot(r_dis(2:end-1)*sin(0),r_dis(2:end-1)*cos(0),'|','markersize',20,'linewidth',1.5,'color','r');
-% plot(r_mid*sin(0),r_mid*cos(0),'o','markersize',5,'MarkerFaceColor','red','linewidth',1.5,'color','r');
-% Magnets segments
 plot([R_r*sin(theta(1)+(1-alpha_p)*pi/(2*p):pi/(p):theta(end));R_m*sin(theta(1)+(1-alpha_p)*pi/(2*p):pi/(p):theta(end))],[R_r*cos(theta(1)+(1-alpha_p)*pi/(2*p):pi/(p):theta(end));R_m*cos(theta(1)+(1-alpha_p)*pi/(2*p):pi/(p):theta(end))],'linewidth',0.8,'color','k');
 plot([R_r*sin(theta(1)+(1+alpha_p)*pi/(2*p):pi/(p):theta(end));R_m*sin(theta(1)+(1+alpha_p)*pi/(2*p):pi/(p):theta(end))],[R_r*cos(theta(1)+(1+alpha_p)*pi/(2*p):pi/(p):theta(end));R_m*cos(theta(1)+(1+alpha_p)*pi/(2*p):pi/(p):theta(end))],'linewidth',0.8,'color','k');
 plot([R_r*sin(theta(1)+(1-alpha_p1)*pi/(2*p):pi/(p):theta(end));R_m*sin(theta(1)+(1-alpha_p1)*pi/(2*p):pi/(p):theta(end))],[R_r*cos(theta(1)+(1-alpha_p1)*pi/(2*p):pi/(p):theta(end));R_m*cos(theta(1)+(1-alpha_p1)*pi/(2*p):pi/(p):theta(end))],'linewidth',0.8,'color','k');
 plot([R_r*sin(theta(1)+(1+alpha_p1)*pi/(2*p):pi/(p):theta(end));R_m*sin(theta(1)+(1+alpha_p1)*pi/(2*p):pi/(p):theta(end))],[R_r*cos(theta(1)+(1+alpha_p1)*pi/(2*p):pi/(p):theta(end));R_m*cos(theta(1)+(1+alpha_p1)*pi/(2*p):pi/(p):theta(end))],'linewidth',0.8,'color','k');
 % Winding slots
 plot(R_w*sin(linspace(theta(1),theta(end),100)),R_w*cos(linspace(theta(1),theta(end),100)),'linewidth',0.8,'color','k');
-plot(R_wi*sin(linspace(theta(1),theta(end),100)),R_wi*cos(linspace(theta(1),theta(end),100)),'linewidth',0.8,'color','k');
-plot([R_wi*sin(theta(1)+pi/(6*p):pi/(3*p):theta(end)-pi/(6*p));R_w*sin(theta(1)+pi/(6*p):pi/(3*p):theta(end)-pi/(6*p))],[R_wi*cos(theta(1)+pi/(6*p):pi/(3*p):theta(end)-pi/(6*p));R_w*cos(theta(1)+pi/(6*p):pi/(3*p):theta(end)-pi/(6*p))],'linewidth',0.8,'color','k');
+plot(R_ws*sin(linspace(theta(1),theta(end),100)),R_ws*cos(linspace(theta(1),theta(end),100)),'linewidth',0.8,'color','k');
+plot([R_ws*sin(theta(1)+pi/(6*p):pi/(3*p):theta(end)-pi/(6*p));R_w*sin(theta(1)+pi/(6*p):pi/(3*p):theta(end)-pi/(6*p))],[R_ws*cos(theta(1)+pi/(6*p):pi/(3*p):theta(end)-pi/(6*p));R_w*cos(theta(1)+pi/(6*p):pi/(3*p):theta(end)-pi/(6*p))],'linewidth',0.8,'color','k');
 set(gca,'visible','off');
 colormap(jet)
 c = colorbar;
@@ -605,45 +596,6 @@ axis image
 % camroll(-90)
 title({'Flux density norm map and isopotential lines',' in the whole 2D domain (optimal formulation)'})
 
-
-figure;
-hold on;
-% contourf(x,y,Norm_Bgm,B_levels,'edgecolor','none');
-% contourf(x_m,y_m,Norm_Bm_m,B_levels,'edgecolor','none');
-contourf(x_s,y_s,Norm_BS_m,B_levels,'edgecolor','none');
-% contourf(x_ext,y_ext,Norm_BI_m,B_levels,'edgecolor','none');
-contour(x, y,A_z',Levels,'LineColor','k','linewidth',2)
-% contour(x_m, y_m,Az_m',Levels,'LineColor','k','linewidth',2) %Create contour plots in polar coordinates onto polar chart
-contour(x_s, y_s,Az_S_m',Levels,'LineColor','k','linewidth',2) %Create contour plots in polar coordinates onto polar chart
-% contour(x_ext, y_ext,Az_I_m',Levels,'LineColor','k','linewidth',2)
-% Circumferential boundaries
-% plot(R_ie*sin(linspace(theta(1),theta(end),100)),R_ie*cos(linspace(theta(1),theta(end),100)),'linewidth',0.8,'color','k');
-% plot(R_r*sin(linspace(theta(1),theta(end),100)),R_r*cos(linspace(theta(1),theta(end),100)),'linewidth',0.8,'color','k');
-plot(R_m*sin(linspace(theta(1),theta(end),100)),R_m*cos(linspace(theta(1),theta(end),100)),'linewidth',0.8,'color','k');
-plot(R_s*sin(linspace(theta(1),theta(end),100)),R_s*cos(linspace(theta(1),theta(end),100)),'linewidth',0.8,'color','k');
-plot(R_se*sin(linspace(theta(1),theta(end),100)),R_se*cos(linspace(theta(1),theta(end),100)),'linewidth',0.8,'color','k');
-% Search coil
-plot((R_se+g/2)*sin(linspace(-pi/2/p,pi/2/p,10)),(R_se+g/2)*cos(linspace(-pi/2/p,pi/2/p,10)),'x','markersize',15,'linewidth',2,'color','r');
-plot((R_se+g/2)*sin(linspace(-pi/2/p,pi/2/p,10)),(R_se+g/2)*cos(linspace(-pi/2/p,pi/2/p,10)),'o','markersize',20,'linewidth',2,'color','r');
-plot((R_s-g/2)*sin(linspace(-pi/2/p,pi/2/p,10)),(R_s-g/2)*cos(linspace(-pi/2/p,pi/2/p,10)),'.r','markersize',15,'linewidth',2,'color','r');
-plot((R_s-g/2)*sin(linspace(-pi/2/p,pi/2/p,10)),(R_s-g/2)*cos(linspace(-pi/2/p,pi/2/p,10)),'o','markersize',20,'linewidth',2,'color','r');
-% Winding slots
-plot(R_w*sin(linspace(theta(1),theta(end),100)),R_w*cos(linspace(theta(1),theta(end),100)),'linewidth',0.8,'color','k');
-plot(R_wi*sin(linspace(theta(1),theta(end),100)),R_wi*cos(linspace(theta(1),theta(end),100)),'linewidth',0.8,'color','k');
-plot([R_wi*sin(theta(1)+pi/(6*p):pi/(3*p):theta(end)-pi/(6*p));R_w*sin(theta(1)+pi/(6*p):pi/(3*p):theta(end)-pi/(6*p))],[R_wi*cos(theta(1)+pi/(6*p):pi/(3*p):theta(end)-pi/(6*p));R_w*cos(theta(1)+pi/(6*p):pi/(3*p):theta(end)-pi/(6*p))],'linewidth',0.8,'color','k');
-set(gca,'visible','off');
-colormap(jet)
-c = colorbar;
-c.Label.String = 'Flux density norm [T]';
-caxis([B_min B_max])
-% Hide the POLAR function data and leave annotations
-% set(h,'Visible','off')
-% set(h_m,'Visible','off')
-% Turn off axes and set square aspect ratio
-axis off
-axis image
-% camroll(-90)
-% title({'Flux density norm map and isopotential lines',' in the whole 2D domain (optimal formulation)'})
 
 elseif Halbach == 1
     
@@ -671,8 +623,8 @@ plot([R_r*sin(theta(1)+(1+alpha_p1)*pi/(2*p):pi/(p):theta(end));R_m*sin(theta(1)
 plot([R_r*sin(theta(1):pi/(p):theta(end));R_m*sin(theta(1):pi/(p):theta(end))],[R_r*cos(theta(1):pi/(p):theta(end));R_m*cos(theta(1):pi/(p):theta(end))],'linewidth',0.8,'color','k');
 % Winding slots
 plot(R_w*sin(linspace(theta(1),theta(end),100)),R_w*cos(linspace(theta(1),theta(end),100)),'linewidth',0.8,'color','k');
-plot(R_wi*sin(linspace(theta(1),theta(end),100)),R_wi*cos(linspace(theta(1),theta(end),100)),'linewidth',0.8,'color','k');
-plot([R_wi*sin(theta(1)+pi/(6*p):pi/(3*p):theta(end)-pi/(6*p));R_w*sin(theta(1)+pi/(6*p):pi/(3*p):theta(end)-pi/(6*p))],[R_wi*cos(theta(1)+pi/(6*p):pi/(3*p):theta(end)-pi/(6*p));R_w*cos(theta(1)+pi/(6*p):pi/(3*p):theta(end)-pi/(6*p))],'linewidth',0.8,'color','k');
+plot(R_ws*sin(linspace(theta(1),theta(end),100)),R_ws*cos(linspace(theta(1),theta(end),100)),'linewidth',0.8,'color','k');
+plot([R_ws*sin(theta(1)+pi/(6*p):pi/(3*p):theta(end)-pi/(6*p));R_w*sin(theta(1)+pi/(6*p):pi/(3*p):theta(end)-pi/(6*p))],[R_ws*cos(theta(1)+pi/(6*p):pi/(3*p):theta(end)-pi/(6*p));R_w*cos(theta(1)+pi/(6*p):pi/(3*p):theta(end)-pi/(6*p))],'linewidth',0.8,'color','k');
 set(gca,'visible','off');
 colormap(jet)
 c = colorbar;

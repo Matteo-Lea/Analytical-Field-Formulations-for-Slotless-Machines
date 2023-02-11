@@ -1,4 +1,4 @@
-runs = 2000;
+runs = 1000;
 
 tic
 for ii = 1:runs

@@ -23,31 +23,6 @@ mu_0 = 4*pi*1e-7; % air permeability
 %% inrunner example
 Inrunner
 
-% opt ex
-% R_wi = (0.15); % winding radius [m]
-% R_s = (0.15); % stator radius [m]
-% R_se = (0.15+0.0016); % outer stator radius [m]
-% R_w = (0.15-0.0086); % winding radius [m]
-% R_m = (R_w-0.002); % magnets array outer radius [m]
-% R_r = (R_m-0.0128); % outer rotor radius (inner magnets radius) [m]
-% R_i = 0;
-% g = abs(R_w-R_m); % air-gap thickness [m]
-% R_1 = R_m -g/2; % mid-air-gap radius [m]
-% R_2 = R_s/2+R_se/2; % mid-stator radius
-% % machine/magnets configuration parameters
-% B_r = 1.4; % remanent flux density [T] (mid-magnet)
-% B_rs = B_r; % remanent flux density [T] (side-magnets)
-% mu_r = 1.0; % PM recoil permeability [-]
-% alpha_p = 0.5; % mid-magnet to pole ratio [-]
-% alpha_p1 = 2-alpha_p; % side-magnets + mid-magnet to pole ratio [-]  
-% p = 20; % pole pairs
-% % machine configuration parameters
-% k_ff = 0.6; % fill factor
-% N_tc = 1; % number of conductors per coil
-% q = 1; %coils per pole and per phase
-% b = 1; % parallel ways per phase
-% I = 1856; % phase current peak value [A]
-% S_Ph = pi*abs(R_wi^2-R_w^2)/(6*p); % phase belt cross section
 
 %% outrunner example
 % Outrunner
@@ -134,13 +109,13 @@ end
 
 % inrunner
 if R_s>R_m 
-r_w = linspace(R_w,R_wi,50)';                                               % winding radial discretization
-r_bw = linspace(R_wi,R_s,50)';                                              % air back-winding region discretization
+r_w = linspace(R_w,R_ws,50)';                                               % winding radial discretization
+r_bw = linspace(R_ws,R_s,50)';                                              % air back-winding region discretization
 r_s = linspace(R_s,R_se,50)';                                               % stator iron discretization
 % outrunner
 elseif R_s<R_m 
-r_w = linspace(R_wi,R_w,50)';                                               % winding radial discretization
-r_bw = linspace(R_s,R_wi,50)';                                              % air back-winding region discretization
+r_w = linspace(R_ws,R_w,50)';                                               % winding radial discretization
+r_bw = linspace(R_s,R_ws,50)';                                              % air back-winding region discretization
 r_s = linspace(R_se,R_s,50)';                                               % stator iron discretization
 end
 
@@ -166,46 +141,46 @@ end
 % (WINDING-TO-BACKIRON REGION)
 if R_s>R_m %  inrunner
 
-    A_J_m_bw = ((R_w/R_wi).^m.*(R_wi^2*(R_w/R_wi).^m-R_w^2).*(R_i/R_w).^(2*m).*A_mJ.*(2+m)-((R_wi^2-R_w^2*(R_w/R_wi).^m).*A_mJ.*(m-2)))./(DEN_JI*R_wi); 
+    A_J_m_bw = ((R_w/R_ws).^m.*(R_ws^2*(R_w/R_ws).^m-R_w^2).*(R_i/R_w).^(2*m).*A_mJ.*(2+m)-((R_ws^2-R_w^2*(R_w/R_ws).^m).*A_mJ.*(m-2)))./(DEN_JI*R_ws); 
 
     if p == 2
-       A_J_m_bw(1) = (R_s/R_wi)^3*A_mJ(1)*R_s*(R_w^4-R_wi^4+4*R_i^4*log(R_w/R_wi))/DEN_JI(1);
+       A_J_m_bw(1) = (R_s/R_ws)^3*A_mJ(1)*R_s*(R_w^4-R_ws^4+4*R_i^4*log(R_w/R_ws))/DEN_JI(1);
     end
 
     % radial component
-    Amp_r_J_bw = (A_J_m_bw.*((r_bw./R_s).^(m-1).*(R_wi/R_s).^(m+1)+(R_wi./r_bw).^(m+1)));
+    Amp_r_J_bw = (A_J_m_bw.*((r_bw./R_s).^(m-1).*(R_ws/R_s).^(m+1)+(R_ws./r_bw).^(m+1)));
     B_r_J_bw = -sigma_m.*Amp_r_J_bw*sin(m'.*Theta);
 
     % one-component magnetic potential 
-    Amp_Az_J_bw = (A_J_m_bw./(m)*R_wi.*((r_bw./R_s).^(m).*(R_wi/R_s).^(m)+(R_wi./r_bw).^(m)));
+    Amp_Az_J_bw = (A_J_m_bw./(m)*R_ws.*((r_bw./R_s).^(m).*(R_ws/R_s).^(m)+(R_ws./r_bw).^(m)));
     A_z_J_bw = sigma_m.*Amp_Az_J_bw*cos(m'.*Theta);
 
     % circumferential component
-    Amp_theta_J_bw = (A_J_m_bw.*(-(r_bw./R_s).^(m-1).*(R_wi/R_s).^(m+1)+(R_wi./r_bw).^(m+1)));
+    Amp_theta_J_bw = (A_J_m_bw.*(-(r_bw./R_s).^(m-1).*(R_ws/R_s).^(m+1)+(R_ws./r_bw).^(m+1)));
     B_theta_J_bw = sigma_m.*Amp_theta_J_bw*cos(m'.*Theta);
 
 
 else % outrunner
     
-    A_J_m_bw = A_mJ.*((R_wi/R_w).^m.*(R_wi^2*(R_wi/R_w).^m-R_w^2).*(R_w/R_i).^(2*m).*(m-2)-((R_wi^2-R_w^2*(R_wi/R_w).^m).*(m+2)))./(DEN_JO*R_wi); 
+    A_J_m_bw = A_mJ.*((R_ws/R_w).^m.*(R_ws^2*(R_ws/R_w).^m-R_w^2).*(R_w/R_i).^(2*m).*(m-2)-((R_ws^2-R_w^2*(R_ws/R_w).^m).*(m+2)))./(DEN_JO*R_ws); 
 
     if p == 2
-       A_J_m_bw(1) = A_mJ(1)*R_wi*(R_w^4-R_wi^4+4*R_i^4*log(R_w/R_wi))/DEN_JO(1);
+       A_J_m_bw(1) = A_mJ(1)*R_ws*(R_w^4-R_ws^4+4*R_i^4*log(R_w/R_ws))/DEN_JO(1);
        if R_i == Inf
-           A_J_m_bw(1) = A_mJ(1)*R_wi*4*log(R_w/R_wi)/DEN_JO(1);
+           A_J_m_bw(1) = A_mJ(1)*R_ws*4*log(R_w/R_ws)/DEN_JO(1);
        end
     end
 
     % radial component
-    Amp_r_J_bw = (A_J_m_bw.*((r_bw./R_wi).^(m-1)+(R_s./r_bw).^(m+1).*(R_s/R_wi).^(m-1)));
+    Amp_r_J_bw = (A_J_m_bw.*((r_bw./R_ws).^(m-1)+(R_s./r_bw).^(m+1).*(R_s/R_ws).^(m-1)));
     B_r_J_bw = -sigma_m.*Amp_r_J_bw*sin(m'.*Theta);
 
     % one-component magnetic potential 
-    Amp_Az_J_bw = (A_J_m_bw./(m)*R_wi.*((r_bw./R_wi).^(m)+(R_s./r_bw).^(m).*(R_s/R_wi).^(m)));
+    Amp_Az_J_bw = (A_J_m_bw./(m)*R_ws.*((r_bw./R_ws).^(m)+(R_s./r_bw).^(m).*(R_s/R_ws).^(m)));
     A_z_J_bw = sigma_m.*Amp_Az_J_bw*cos(m'.*Theta);
 
     % circumferential component
-    Amp_theta_J_bw = (A_J_m_bw.*(-(r_bw./R_wi).^(m-1)+(R_s./r_bw).^(m+1).*(R_s/R_wi).^(m-1)));
+    Amp_theta_J_bw = (A_J_m_bw.*(-(r_bw./R_ws).^(m-1)+(R_s./r_bw).^(m+1).*(R_s/R_ws).^(m-1)));
     B_theta_J_bw = sigma_m.*Amp_theta_J_bw*cos(m'.*Theta);
        
 end
@@ -215,69 +190,69 @@ end
 % (WINDING REGION)
 if R_s>R_m %  inrunner
 
-    A_pl_J_w = A_mJ.*(R_wi.*(2-(R_wi/R_s).^(2*m).*(m-2)+m)-R_w*(R_wi/R_s).^(2*m).*(R_w/R_wi).^(m+1).*(2-m+(R_i/R_w).^(2*m).*(2+m)))./DEN_JI;
+    A_pl_J_w = A_mJ.*(R_ws.*(2-(R_ws/R_s).^(2*m).*(m-2)+m)-R_w*(R_ws/R_s).^(2*m).*(R_w/R_ws).^(m+1).*(2-m+(R_i/R_w).^(2*m).*(2+m)))./DEN_JI;
 
-    A_mi_J_w = A_mJ.*(R_wi*(R_w/R_wi).^(m-1).*(R_i/R_w).^(2*m).*(2-(R_wi/R_s).^(2*m).*(m-2)+m)-R_w*(2-m+(R_i/R_w).^(2*m).*(2+m)))./DEN_JI;
+    A_mi_J_w = A_mJ.*(R_ws*(R_w/R_ws).^(m-1).*(R_i/R_w).^(2*m).*(2-(R_ws/R_s).^(2*m).*(m-2)+m)-R_w*(2-m+(R_i/R_w).^(2*m).*(2+m)))./DEN_JI;
 
     if p == 2
-       A_pl_J_w(1) = R_wi*A_mJ(1)*(R_w^4+R_i^4-R_s^4-R_wi^4-4*R_s^4*log(R_wi)+4*R_i^4*log(R_w))/DEN_JI(1);
-       A_mi_J_w(1) = A_mJ(1)/R_w^3*(R_s^4*R_w^4-R_wi^4*R_i^4+4*R_s^4*R_i^4*log(R_w/R_wi))/DEN_JI(1);
+       A_pl_J_w(1) = R_ws*A_mJ(1)*(R_w^4+R_i^4-R_s^4-R_ws^4-4*R_s^4*log(R_ws)+4*R_i^4*log(R_w))/DEN_JI(1);
+       A_mi_J_w(1) = A_mJ(1)/R_w^3*(R_s^4*R_w^4-R_ws^4*R_i^4+4*R_s^4*R_i^4*log(R_w/R_ws))/DEN_JI(1);
     end
 
     % radial component
-    Amp_r_J_w = (A_pl_J_w.*(r_w./R_wi).^(m-1)+A_mi_J_w.*(R_w./r_w).^(m+1)+m.*A_mJ.*r_w);
+    Amp_r_J_w = (A_pl_J_w.*(r_w./R_ws).^(m-1)+A_mi_J_w.*(R_w./r_w).^(m+1)+m.*A_mJ.*r_w);
     if p == 2
-        Amp_r_J_w(:,1) = (A_pl_J_w(1).*(r_w./R_wi)+A_mi_J_w(1).*(R_w./r_w).^(3)+2.*A_mJ(1).*r_w.*log(r_w));
+        Amp_r_J_w(:,1) = (A_pl_J_w(1).*(r_w./R_ws)+A_mi_J_w(1).*(R_w./r_w).^(3)+2.*A_mJ(1).*r_w.*log(r_w));
     end
     B_r_J_w = -sigma_m.*Amp_r_J_w*sin(m'.*Theta);
 
     % one-component magnetic potential 
-    Amp_Az_J_w = (A_pl_J_w./m*R_wi.*(r_w./R_wi).^(m)+A_mi_J_w./m*R_w.*(R_w./r_w).^(m)+A_mJ.*r_w.^2);
+    Amp_Az_J_w = (A_pl_J_w./m*R_ws.*(r_w./R_ws).^(m)+A_mi_J_w./m*R_w.*(R_w./r_w).^(m)+A_mJ.*r_w.^2);
     if p == 2
-        Amp_Az_J_w(:,1) = (A_pl_J_w(1)./2*R_wi.*(r_w./R_wi).^(2)+A_mi_J_w(1)./2*R_w.*(R_w./r_w).^(2)+A_mJ(1).*r_w.^2.*log(r_w));
+        Amp_Az_J_w(:,1) = (A_pl_J_w(1)./2*R_ws.*(r_w./R_ws).^(2)+A_mi_J_w(1)./2*R_w.*(R_w./r_w).^(2)+A_mJ(1).*r_w.^2.*log(r_w));
     end
     A_z_J_w = sigma_m.*Amp_Az_J_w*cos(m'.*Theta);
 
     % circumferential component
-    Amp_theta_J_w = (-A_pl_J_w.*(r_w./R_wi).^(m-1)+A_mi_J_w.*(R_w./r_w).^(m+1)-2*A_mJ.*r_w);
+    Amp_theta_J_w = (-A_pl_J_w.*(r_w./R_ws).^(m-1)+A_mi_J_w.*(R_w./r_w).^(m+1)-2*A_mJ.*r_w);
     if p == 2
-        Amp_theta_J_w(:,1) = (-A_pl_J_w(1).*(r_w./R_wi)+A_mi_J_w(1).*(R_w./r_w).^(3)-2.*A_mJ(1).*r_w.*log(r_w)-A_mJ(1).*r_w);
+        Amp_theta_J_w(:,1) = (-A_pl_J_w(1).*(r_w./R_ws)+A_mi_J_w(1).*(R_w./r_w).^(3)-2.*A_mJ(1).*r_w.*log(r_w)-A_mJ(1).*r_w);
     end
     B_theta_J_w = sigma_m.*Amp_theta_J_w*cos(m'.*Theta);
 
 else % outrunner
     
-    A_pl_J_w = A_mJ.*(R_w.*(2-(R_w/R_i).^(2*m).*(m-2)+m)-R_wi*(R_w/R_i).^(2*m).*(R_wi/R_w).^(m+1).*(2-m+(R_s/R_wi).^(2*m).*(2+m)))./DEN_JO;
+    A_pl_J_w = A_mJ.*(R_w.*(2-(R_w/R_i).^(2*m).*(m-2)+m)-R_ws*(R_w/R_i).^(2*m).*(R_ws/R_w).^(m+1).*(2-m+(R_s/R_ws).^(2*m).*(2+m)))./DEN_JO;
 
-    A_mi_J_w = A_mJ.*(R_w*(R_wi/R_w).^(m-1).*(R_s/R_wi).^(2*m).*(2-(R_w/R_i).^(2*m).*(m-2)+m)+R_wi*(m-2-(R_s/R_wi).^(2*m).*(2+m)))./DEN_JO;
+    A_mi_J_w = A_mJ.*(R_w*(R_ws/R_w).^(m-1).*(R_s/R_ws).^(2*m).*(2-(R_w/R_i).^(2*m).*(m-2)+m)+R_ws*(m-2-(R_s/R_ws).^(2*m).*(2+m)))./DEN_JO;
 
     if p == 2
-       A_pl_J_w(1) = R_w*A_mJ(1)*(R_w^4+R_i^4-R_s^4-R_wi^4-4*R_s^4*log(R_wi)+4*R_i^4*log(R_w))/DEN_JO(1);
-       A_mi_J_w(1) = A_mJ(1)/R_wi^3*(R_s^4*R_w^4-R_wi^4*R_i^4+4*R_s^4*R_i^4*log(R_w/R_wi))/DEN_JO(1);
+       A_pl_J_w(1) = R_w*A_mJ(1)*(R_w^4+R_i^4-R_s^4-R_ws^4-4*R_s^4*log(R_ws)+4*R_i^4*log(R_w))/DEN_JO(1);
+       A_mi_J_w(1) = A_mJ(1)/R_ws^3*(R_s^4*R_w^4-R_ws^4*R_i^4+4*R_s^4*R_i^4*log(R_w/R_ws))/DEN_JO(1);
        if R_i == Inf 
           A_pl_J_w(1) = R_w*A_mJ(1)*(1+4*log(R_w))/DEN_JO(1); 
-          A_mi_J_w(1) = A_mJ(1)/R_wi^3*(4*R_s^4*log(R_w/R_wi)-R_wi^4)/DEN_JO(1);
+          A_mi_J_w(1) = A_mJ(1)/R_ws^3*(4*R_s^4*log(R_w/R_ws)-R_ws^4)/DEN_JO(1);
        end
     end
 
     % radial component
-    Amp_r_J_w = (A_pl_J_w.*(r_w./R_w).^(m-1)+A_mi_J_w.*(R_wi./r_w).^(m+1)+m.*A_mJ.*r_w);
+    Amp_r_J_w = (A_pl_J_w.*(r_w./R_w).^(m-1)+A_mi_J_w.*(R_ws./r_w).^(m+1)+m.*A_mJ.*r_w);
     if p == 2
-        Amp_r_J_w(:,1) = (A_pl_J_w(1).*(r_w./R_w)+A_mi_J_w(1).*(R_wi./r_w).^(3)+2.*A_mJ(1).*r_w.*log(r_w));
+        Amp_r_J_w(:,1) = (A_pl_J_w(1).*(r_w./R_w)+A_mi_J_w(1).*(R_ws./r_w).^(3)+2.*A_mJ(1).*r_w.*log(r_w));
     end
     B_r_J_w = -sigma_m.*Amp_r_J_w*sin(m'.*Theta);
 
     % one-component magnetic potential 
-    Amp_Az_J_w = (A_pl_J_w./m*R_w.*(r_w./R_w).^(m)+A_mi_J_w./m*R_wi.*(R_wi./r_w).^(m)+A_mJ.*r_w.^2);
+    Amp_Az_J_w = (A_pl_J_w./m*R_w.*(r_w./R_w).^(m)+A_mi_J_w./m*R_ws.*(R_ws./r_w).^(m)+A_mJ.*r_w.^2);
     if p == 2
-        Amp_Az_J_w(:,1) = (A_pl_J_w(1)./2*R_w.*(r_w./R_w).^(2)+A_mi_J_w(1)./2*R_wi.*(R_wi./r_w).^(2)+A_mJ(1).*r_w.^2.*log(r_w));
+        Amp_Az_J_w(:,1) = (A_pl_J_w(1)./2*R_w.*(r_w./R_w).^(2)+A_mi_J_w(1)./2*R_ws.*(R_ws./r_w).^(2)+A_mJ(1).*r_w.^2.*log(r_w));
     end
     A_z_J_w = sigma_m.*Amp_Az_J_w*cos(m'.*Theta);
 
     % circumferential component
-    Amp_theta_J_w = (-A_pl_J_w.*(r_w./R_w).^(m-1)+A_mi_J_w.*(R_wi./r_w).^(m+1)-2*A_mJ.*r_w);
+    Amp_theta_J_w = (-A_pl_J_w.*(r_w./R_w).^(m-1)+A_mi_J_w.*(R_ws./r_w).^(m+1)-2*A_mJ.*r_w);
     if p == 2
-        Amp_theta_J_w(:,1) = (-A_pl_J_w(1).*(r_w./R_w)+A_mi_J_w(1).*(R_wi./r_w).^(3)-2.*A_mJ(1).*r_w.*log(r_w)-A_mJ(1).*r_w);
+        Amp_theta_J_w(:,1) = (-A_pl_J_w(1).*(r_w./R_w)+A_mi_J_w(1).*(R_ws./r_w).^(3)-2.*A_mJ(1).*r_w.*log(r_w)-A_mJ(1).*r_w);
     end
     B_theta_J_w = sigma_m.*Amp_theta_J_w*cos(m'.*Theta);
  
@@ -288,10 +263,10 @@ end
 % (AIR-GAP/MAGNETS/(NON-MAGNETIC-BACKING) REGIONS)
 if R_s>R_m %  inrunner
     
-    A_J_m_g = ((R_w/R_wi).^m.*(R_wi/R_s).^(2*m).*(R_w^2*(R_w/R_wi).^m-R_wi^2).*A_mJ.*(m-2)-((R_w^2-R_wi^2*(R_w/R_wi).^m).*A_mJ.*(m+2)))./(R_w*DEN_JI);   
+    A_J_m_g = ((R_w/R_ws).^m.*(R_ws/R_s).^(2*m).*(R_w^2*(R_w/R_ws).^m-R_ws^2).*A_mJ.*(m-2)-((R_w^2-R_ws^2*(R_w/R_ws).^m).*A_mJ.*(m+2)))./(R_w*DEN_JI);   
     
     if p == 2
-       A_J_m_g(1) = A_mJ(1)*R_w*(R_w^4-R_wi^4+4*R_s^4*log(R_w/R_wi))/DEN_JI(1);
+       A_J_m_g(1) = A_mJ(1)*R_w*(R_w^4-R_ws^4+4*R_s^4*log(R_w/R_ws))/DEN_JI(1);
     end
 
     % radial component
@@ -308,12 +283,12 @@ if R_s>R_m %  inrunner
 
 else % outrunner
     
-    A_J_m_g = A_mJ.*((R_wi/R_w).^m.*(R_s/R_wi).^(2*m).*(R_w^2*(R_wi/R_w).^m-R_wi^2).*(m+2)+((-R_w^2+R_wi^2*(R_wi/R_w).^m).*(m-2)))./(R_w*DEN_JO);   
+    A_J_m_g = A_mJ.*((R_ws/R_w).^m.*(R_s/R_ws).^(2*m).*(R_w^2*(R_ws/R_w).^m-R_ws^2).*(m+2)+((-R_w^2+R_ws^2*(R_ws/R_w).^m).*(m-2)))./(R_w*DEN_JO);   
 
     if p == 2
-       A_J_m_g(1) = A_mJ(1)*R_i*(R_i/R_w)^3*(R_w^4-R_wi^4+4*R_s^4*log(R_w/R_wi))/DEN_JO(1);
+       A_J_m_g(1) = A_mJ(1)*R_i*(R_i/R_w)^3*(R_w^4-R_ws^4+4*R_s^4*log(R_w/R_ws))/DEN_JO(1);
        if R_i == Inf
-          A_J_m_g(1) = A_mJ(1)/R_w^3*(R_w^4-R_wi^4+4*R_s^4*log(R_w/R_wi))/DEN_JO(1);
+          A_J_m_g(1) = A_mJ(1)/R_w^3*(R_w^4-R_ws^4+4*R_s^4*log(R_w/R_ws))/DEN_JO(1);
        end
     end
 
@@ -362,7 +337,7 @@ end
 end
 
 %% WINDING BACKIG
-if R_wi == R_s
+if R_ws == R_s
     if R_s>R_m % INRUNNER stator core region field computation
     
         G_wb_m_J = (A_pl_J_w + A_mi_J_w.*(R_w./R_s).^(m+1) + m.*A_mJ*R_s)./((R_s/R_se).^(2*m)-1);
@@ -402,7 +377,7 @@ if R_wi == R_s
 else
     if R_s>R_m % INRUNNER stator core region field computation
     
-        G_wb_m_J = (2*A_J_m_bw.*(R_wi./R_s).^(m+1))./((R_s/R_se).^(2*m)-1);
+        G_wb_m_J = (2*A_J_m_bw.*(R_ws./R_s).^(m+1))./((R_s/R_se).^(2*m)-1);
 
         Amp_Az_wb_m = (R_s*G_wb_m_J./m.*((r_s./R_se).^(m).*(R_s/R_se).^(m)-(R_s./r_s).^(m)));
         A_z_wb_J = sigma_m.*Amp_Az_wb_m*cos(m'.*Theta);
@@ -415,7 +390,7 @@ else
 
     else % OUTRUNNER stator core region field computation
 
-        G_wb_m_out_J = (2*A_J_m_bw.*(R_s./R_wi).^(m-1))./(1-(R_se/R_s).^(2*m));
+        G_wb_m_out_J = (2*A_J_m_bw.*(R_s./R_ws).^(m-1))./(1-(R_se/R_s).^(2*m));
 
         Amp_Az_wb_m = (R_s*G_wb_m_out_J./m.*((r_s./R_s).^(m)-(R_se./r_s).^(m).*(R_se/R_s).^(m)));
         A_z_wb_J = sigma_m.*Amp_Az_wb_m*cos(m'.*Theta);
@@ -488,8 +463,8 @@ plot([R_r*sin(theta(1)+pi/p-alpha_p*pi/(2*p):pi/(p):theta(end));R_m*sin(theta(1)
 plot(R_s*sin(linspace(theta(1),theta(end),100)),R_s*cos(linspace(theta(1),theta(end),100)),'linewidth',0.8,'color','k');
 plot(R_se*sin(linspace(theta(1),theta(end),100)),R_se*cos(linspace(theta(1),theta(end),100)),'linewidth',0.8,'color','k');
 plot(R_w*sin(linspace(theta(1),theta(end),100)),R_w*cos(linspace(theta(1),theta(end),100)),'linewidth',0.8,'color','k');
-plot(R_wi*sin(linspace(theta(1),theta(end),100)),R_wi*cos(linspace(theta(1),theta(end),100)),'linewidth',0.8,'color','k');
-plot([R_wi*sin(theta(1)+pi/(6*p):pi/(3*p):theta(end)-pi/(6*p));R_w*sin(theta(1)+pi/(6*p):pi/(3*p):theta(end)-pi/(6*p))],[R_wi*cos(theta(1)+pi/(6*p):pi/(3*p):theta(end)-pi/(6*p));R_w*cos(theta(1)+pi/(6*p):pi/(3*p):theta(end)-pi/(6*p))],'linewidth',0.8,'color','k');
+plot(R_ws*sin(linspace(theta(1),theta(end),100)),R_ws*cos(linspace(theta(1),theta(end),100)),'linewidth',0.8,'color','k');
+plot([R_ws*sin(theta(1)+pi/(6*p):pi/(3*p):theta(end)-pi/(6*p));R_w*sin(theta(1)+pi/(6*p):pi/(3*p):theta(end)-pi/(6*p))],[R_ws*cos(theta(1)+pi/(6*p):pi/(3*p):theta(end)-pi/(6*p));R_w*cos(theta(1)+pi/(6*p):pi/(3*p):theta(end)-pi/(6*p))],'linewidth',0.8,'color','k');
 set(gca,'visible','off');
 colormap(jet)
 c = colorbar;

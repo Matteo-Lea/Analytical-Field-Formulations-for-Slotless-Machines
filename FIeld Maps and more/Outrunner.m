@@ -6,8 +6,8 @@ R_r = (0.097/2); % outer rotor radius (inner magnets radius) [m]
 R_m = (0.088/2); % magnets array outer radius [m]
 R_w = (0.087/2); % winding radius [m]
 R_s = (0.08/2); % stator radius [m]
-R_wi = (0.082/2); % winding radius [m]
-% R_s = R_wi; % winding radius [m]
+R_ws = (0.082/2); % winding radius [m]
+% R_s = R_ws; % winding radius [m]
 R_se = (0.078/2); % outer stator radius [m]
 R_i = Inf; % Iron boundary radius facing the magnets
 % R_i = R_r; % Iron boundary radius facing the magnets
@@ -74,7 +74,7 @@ end
 
 
 
-S_Ph = abs(pi*(R_wi^2-R_w^2)/(6*p)); % phase belt cross section
+S_Ph = abs(pi*(R_ws^2-R_w^2)/(6*p)); % phase belt cross section
 N_tc = 6; % number of conductors per coil
 q = 1; %coils per pole and per phase
 b = 3; % parallel ways per phase
