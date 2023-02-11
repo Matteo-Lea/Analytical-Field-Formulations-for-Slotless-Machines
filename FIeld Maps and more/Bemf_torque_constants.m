@@ -20,9 +20,8 @@
 
 mu_0 = 4*pi*1e-7; % air permeability
 
-run(top)
 %% inrunner geometry
-% Inrunner
+Inrunner
 
 %% outrunner geometry
 % Outrunner
@@ -56,7 +55,7 @@ else % no iron backing
     end
 end
 %% useful indices for series harmonics definition
-m_PM = 1; % number of harmonics or series components tionfor the magnetization functions
+m_PM = 300; % number of harmonics or series components tionfor the magnetization functions
 x = 0:1:m_PM;
 % x = linspace(0,40,m_PM+1);
 n = p*(2*x+1); % existing harmonic series components (n=1,3,5,...)
@@ -64,7 +63,7 @@ n = p*(2*x+1); % existing harmonic series components (n=1,3,5,...)
 sigma = (sin(pi*n./n(end))./(pi*n./n(end))).^3; % Lanczos sigma for Gibbs phenomenon reduction
 %% circumferential discretization
 sec = 1;                                                                    % number of poles to be modeled
-m_th = 1000*sec;                                                            % points along the modeled sector
+m_th = 100*sec;                                                            % points along the modeled sector
 % mechanical angle
 theta = linspace(0,sec*pi/(p),m_th)-pi/(2*p)*sec;
 
@@ -152,18 +151,18 @@ end
 
 
 % magnetization reconstruction from harmonics components (not needed)
-M_theta_par_mid = M_theta_n_par_mid*sin(n'.*Theta);
-M_r_par_mid = M_r_n_par_mid*cos(n'.*Theta);
-
-
-M_r_par_end_side = M_r_n_par_end_side*cos(n'.*Theta);
-M_theta_par_end_side = M_theta_n_par_end_side*sin(n'.*Theta);
-
-M_r_par_side = M_r_n_par_side*cos(n'.*Theta);
-M_theta_par_side = M_theta_n_par_side*sin(n'.*Theta);
-
-M_r_par = (M_r_n_par_mid+M_r_n_par_end_side+M_r_n_par_side)*cos(n'.*Theta);
-M_theta_par = (M_theta_n_par_mid+M_theta_n_par_end_side+M_theta_n_par_side)*sin(n'.*Theta);
+% M_theta_par_mid = M_theta_n_par_mid*sin(n'.*Theta);
+% M_r_par_mid = M_r_n_par_mid*cos(n'.*Theta);
+% 
+% 
+% M_r_par_end_side = M_r_n_par_end_side*cos(n'.*Theta);
+% M_theta_par_end_side = M_theta_n_par_end_side*sin(n'.*Theta);
+% 
+% M_r_par_side = M_r_n_par_side*cos(n'.*Theta);
+% M_theta_par_side = M_theta_n_par_side*sin(n'.*Theta);
+% 
+% M_r_par = (M_r_n_par_mid+M_r_n_par_end_side+M_r_n_par_side)*cos(n'.*Theta);
+% M_theta_par = (M_theta_n_par_mid+M_theta_n_par_end_side+M_theta_n_par_side)*sin(n'.*Theta);
 
     
 M_r_n = M_r_n_par_mid+M_r_n_par_end_side+M_r_n_par_side;
@@ -198,14 +197,14 @@ if p == 1
    end   
 end
 
-C = (R_m/R_s).^(n).*(R_wi^2*(R_wi/R_s).^(n)-R_w^2*(R_w/R_s).^(n))./((n+2)*R_m)+(R_wi^2*(R_m/R_wi).^(n)-R_w^2*(R_m/R_w).^(n))./((2-n)*R_m);
+C = (R_m/R_s).^(n).*(R_ws^2*(R_ws/R_s).^(n)-R_w^2*(R_w/R_s).^(n))./((n+2)*R_m)+(R_ws^2*(R_m/R_ws).^(n)-R_w^2*(R_m/R_w).^(n))./((2-n)*R_m);
 
-C_out = (R_w^2*(R_w/R_m).^(n)-R_wi^2*(R_wi/R_m).^(n))./((n+2)*R_m)+(R_w^2/R_s*(R_s/R_w).^(n)-R_wi^2/R_s*(R_s/R_wi).^(n))./(2-n).*(R_s/R_m).^(n+1);
+C_out = (R_w^2*(R_w/R_m).^(n)-R_ws^2*(R_ws/R_m).^(n))./((n+2)*R_m)+(R_w^2/R_s*(R_s/R_w).^(n)-R_ws^2/R_s*(R_s/R_ws).^(n))./(2-n).*(R_s/R_m).^(n+1);
 
 % the back-emf integral exhibits a singularity for np = 2
 if p == 2
-    C(1) = R_m.*log(R_wi./R_w) + R_m./(4*R_s.^4).*(R_wi.^4-R_w.^4);
-    C_out(1) = 1./R_m.^3.*(R_s.^4.*log(R_w./R_wi)+R_w.^4/4-R_wi.^4/4);
+    C(1) = R_m.*log(R_ws./R_w) + R_m./(4*R_s.^4).*(R_ws.^4-R_w.^4);
+    C_out(1) = 1./R_m.^3.*(R_s.^4.*log(R_w./R_ws)+R_w.^4/4-R_ws.^4/4);
 end
 
 
@@ -215,16 +214,20 @@ if R_s>R_m % INRUNNER winding/air-gap region field compuatation
 
 % Back-emf and Torque constants computation
 
-k_v = abs(-(n_cs*l_a/S_Ph*p*4*sin(n/p*pi/6).*C.*(K_Bn*R_m^2./(n))));
-k_t = 3/2*k_v;
+E_n = -(n_cs*l_a/S_Ph*p*omega*4*sin(n/p*pi/6).*C.*(K_Bn*R_m^2./(n)));
+emf_a = E_n*cos(n'.*theta./sec);
+k_v = max(abs(emf_a)) / omega; % [V/rad/s]
+k_t = 3/2*k_v; % [Nm/A_pk]
 
 else % OUTRUNNER winding/air-gap region field compuatation
 % FLUX DENSITY IN THE WINDINGS/AIR-GAP REGIONS
 
 % Back-emf and Torque computation
 
-k_v = abs(-(n_cs*l_a/S_Ph*p*4*sin(n/p*pi/6).*C_out.*(K_Bn_out*R_m^2./(n))));
-k_t = 3/2*k_v;
+E_n = -(n_cs*l_a/S_Ph*p*omega*4*sin(n/p*pi/6).*C_out.*(K_Bn_out*R_m^2./(n)));
+emf_a = E_n*cos(n'.*theta./sec);
+k_v = max(abs(emf_a)) / omega; % [V/rad/s]
+k_t = 3/2*k_v; % [Nm/A_pk]
 
 end
 

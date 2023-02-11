@@ -1,8 +1,8 @@
-runs = 1000;
+runs = 10000;
 
 tic
 for ii = 1:runs
-    PM_field_map
+    Bemf_torque_constants
 end
 
 delta_t = toc;

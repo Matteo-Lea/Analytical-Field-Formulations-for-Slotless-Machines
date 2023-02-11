@@ -81,7 +81,7 @@ q = 1; %coils per pole and per phase
 b = 1; % parallel ways per phase
 I = 20; % phase current peak value [A]
 n_cs = N_tc*q/b;
-omega = 1000*2*pi/60*p; % mechanical angular frequency [rad/s]
+omega = 1000*2*pi/60; % mechanical angular frequency [rad/s]
 
 var = 0; % variable for setting the type of magnetization: cartesian (var=0) 
          % or cylindrical (var=1)
