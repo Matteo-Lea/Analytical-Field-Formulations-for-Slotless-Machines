@@ -44,7 +44,7 @@ sigma_m = [sigma_h,sigma_k];
 sec = 1;                                                                    % number of poles to be modeled
 m_th = 1000*sec;                                                            % points along the modeled sector
 % mechanical angle
-theta = linspace(0,sec*pi/(p),m_th)-pi/(2*p);
+theta = linspace(0,sec*pi/(p),m_th);
 Theta = repmat(theta,2*(m_J+1),1);
 
 %% Current density distribution

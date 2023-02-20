@@ -31,13 +31,13 @@ Inrunner
 
 %% RADIAL DISCRETIZATION 
 
-mapping = "no";
+mapping = "yes";
 torque = "no";
-back_emf = "yes";
+back_emf = "no";
 if R_s>R_m %  inrunner
-r = linspace(R_m,R_s,20)'; % radius at which the flux density is to be evaluated
+r = linspace(R_m,R_s,500)'; % radius at which the flux density is to be evaluated
 % r = (R_m:0.1*1e-3:R_s)'; % radius at which the flux density is to be evaluated
-r_m = linspace(R_r,R_m,20)'; % radius at which the flux density is to be evaluated
+r_m = linspace(R_r,R_m,500)'; % radius at which the flux density is to be evaluated
 r_s = linspace(R_s,R_se,10)';
 elseif R_s<R_m %  outrunner
 r = linspace(R_s,R_m,20)'; % radius at which the flux density is to be evaluated
@@ -56,22 +56,22 @@ if R_i == R_r %iron backing
 else % no iron backing
     if R_s >R_m % inrunner
         R_ie = R_r-0.25*pi*R_r/p;
-        r_ext = linspace(R_ie,R_r,20)';
+        r_ext = linspace(R_ie,R_r,50)';
     else % outrunner
         R_ie = R_r+0.5*pi*R_r/p;
         r_ext = linspace(R_r,R_ie,20)';
     end
 end
 %% useful indices for series harmonics definition
-m_PM = 300; % number of harmonics or series components tionfor the magnetization functions
+m_PM = 3000; % number of harmonics or series components tionfor the magnetization functions
 x = 0:1:m_PM;
 % x = linspace(0,40,m_PM+1);
 n = p*(2*x+1); % existing harmonic series components (n=1,3,5,...)
 
 sigma = (sin(pi*n./n(end))./(pi*n./n(end))).^3; % Lanczos sigma for Gibbs phenomenon reduction
 %% circumferential discretization
-sec = p;                                                                    % number of poles to be modeled
-m_th = 100*sec;                                                            % points along the modeled sector
+sec = 1;                                                                    % number of poles to be modeled
+m_th = 500*sec;                                                            % points along the modeled sector
 % mechanical angle
 theta = linspace(0,sec*pi/(p),m_th)-pi/(2*p)*sec; % circumferential discretization (leave the -pi/(2*p))
 
@@ -551,7 +551,7 @@ Norm_Bgm = sqrt(B_g_r_m'.^2+B_g_theta_m'.^2);
 Norm_Bm_m = sqrt(B_m_r_m'.^2+B_m_theta_m'.^2);
 Norm_BS_m = sqrt(B_Sr_m'.^2+B_Stheta_m'.^2);
 Norm_BI_m = sqrt(B_Ir_m'.^2+B_Itheta_m'.^2);
-Levels = linspace(min([min(min(Az_m)) min(min(A_z)) min(min(Az_S_m)) min(min(Az_I_m))]),max([max(max(Az_m)) max(max(A_z)) max(max(Az_S_m)) max(max(Az_I_m))]),10);
+Levels = linspace(min([min(min(Az_m)) min(min(A_z)) min(min(Az_S_m)) min(min(Az_I_m))]),max([max(max(Az_m)) max(max(A_z)) max(max(Az_S_m)) max(max(Az_I_m))]),15);
 B_min = 0;
 B_max = 1.7;
 B_levels = linspace(B_min,B_max,100);

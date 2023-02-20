@@ -8,7 +8,6 @@ R_w = (84/2)*1e-3; % winding radius [m]
 R_s = (87/2)*1e-3; % stator radius [m]
 R_ws = (87/2)*1e-3; % winding radius [m]
 % R_s = R_ws; % winding radius [m]
-% R_se = (89.68/2)*1e-3; % outer stator radius [m]
 R_se = (90/2)*1e-3; % outer stator radius [m]
 R_i = 0; % Iron boundary radius facing the magnets
 % R_ie = R_i-sign(R_w-R_m)*0.1*R_i;
