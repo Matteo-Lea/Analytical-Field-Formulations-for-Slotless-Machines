@@ -33,20 +33,6 @@ y = x+1;
 % current harmonics order
 m = p*(2*x+1); % existing single-phase harmonic series components (n=1,3,5,...)
 
-% sigma_n = (sin(pi*m./m(end))./(pi*m./m(end))).^3;
-
-
-% sigma_m = [sigma_h,sigma_k];
-% sigma_m = sigma_n;
-%% circumferential discretization
-
-% sec = 2;                                                                    % number of poles to be modeled
-% m_th = 1000*sec;                                                            % points along the modeled sector
-% mechanical angle
-% theta = linspace(0,sec*pi/(p),m_th);
-% Theta = repmat(theta,2*(m_J+1),1);
-% Theta = repmat(theta,(m_J+1),1);
-
 %% Current density distribution
 I_tot = N_tc*q*I/b;                                                         % total current through the phase belt
 J_Ph = I_tot/S_Ph;                                                          % phase current density

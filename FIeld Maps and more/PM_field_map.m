@@ -31,13 +31,13 @@ Inrunner
 
 %% RADIAL DISCRETIZATION 
 
-mapping = "yes";
+mapping = "no";
 torque = "no";
 back_emf = "no";
 if R_s>R_m %  inrunner
-r = linspace(R_m,R_s,500)'; % radius at which the flux density is to be evaluated
+r = linspace(R_m,R_s,20)'; % radius at which the flux density is to be evaluated
 % r = (R_m:0.1*1e-3:R_s)'; % radius at which the flux density is to be evaluated
-r_m = linspace(R_r,R_m,500)'; % radius at which the flux density is to be evaluated
+r_m = linspace(R_r,R_m,20)'; % radius at which the flux density is to be evaluated
 r_s = linspace(R_s,R_se,10)';
 elseif R_s<R_m %  outrunner
 r = linspace(R_s,R_m,20)'; % radius at which the flux density is to be evaluated
@@ -63,13 +63,13 @@ else % no iron backing
     end
 end
 %% useful indices for series harmonics definition
-m_PM = 3000; % number of harmonics or series components tionfor the magnetization functions
+m_PM = 1000; % number of harmonics or series components tionfor the magnetization functions
 x = 0:1:m_PM;
 % x = linspace(0,40,m_PM+1);
 n = p*(2*x+1); % existing harmonic series components (n=1,3,5,...)
 
 sigma = (sin(pi*n./n(end))./(pi*n./n(end))).^3; % Lanczos sigma for Gibbs phenomenon reduction
-%% circumferential discretization
+%% ANGULAR DISCRETIZATION
 sec = 1;                                                                    % number of poles to be modeled
 m_th = 500*sec;                                                            % points along the modeled sector
 % mechanical angle

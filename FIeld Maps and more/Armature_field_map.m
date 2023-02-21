@@ -93,19 +93,6 @@ else % no iron backing
         r_g = linspace(R_w,R_ie,50)';                                       % airgap/magnets/air-backing radial discretization
     end
 end
-% else 
-%     % inrunner
-%     if R_s >R_m 
-%         R_ie = 0;
-%         r_ext = linspace(R_ie,R_r,50)';
-%         r_g = linspace(R_ie,R_w,50)';                                        % airgap/magnets/air-backing radial discretization
-%     % outrunner
-%     else 
-%         R_ie = R_r+0.5*pi*R_r/p;
-%         r_ext = linspace(R_r,R_ie,50)';
-%         r_g = linspace(R_w,R_ie,50)';                                        % airgap/magnets/air-backing radial discretization
-%     end
-% end
 
 % inrunner
 if R_s>R_m 
