@@ -153,30 +153,8 @@ elseif R_w<R_m % outrunner case
         M_theta_n_par_end_side = B_rs/mu_0*(alpha_p1*(M_2_3+M_1_3)-(M_3_3+M_4_3));
         M_r_n_par_side = B_rs/mu_0*(alpha_p*(M_1_2-M_2_2)+alpha_p1*(M_4_2-M_3_2));
         M_theta_n_par_side = B_rs/mu_0*(alpha_p*(M_2_2+M_1_2)-alpha_p1*(M_3_2+M_4_2));
-%         M_r_n_par_mid = -B_r/mu_0*alpha_p*(M_1_0+M_2_0);
-%         M_theta_n_par_mid = B_r/mu_0*alpha_p*(M_1_0-M_2_0);
-%         M_r_n_par_end_side = -B_rs/mu_0*(alpha_p1*(M_1_3-M_2_3)+(M_4_3-M_3_3));
-%         M_theta_n_par_end_side = B_rs/mu_0*(alpha_p1*(M_2_3+M_1_3)-(M_3_3+M_4_3));
-%         M_r_n_par_side = -B_rs/mu_0*(alpha_p*(M_1_2-M_2_2)+alpha_p1*(M_4_2-M_3_2));
-%         M_theta_n_par_side = B_rs/mu_0*(alpha_p*(M_2_2+M_1_2)-alpha_p1*(M_3_2+M_4_2));
     end
 end
-
-
-% magnetization reconstruction from harmonics components (not needed)
-M_theta_par_mid = M_theta_n_par_mid*sin(n'.*theta);
-M_r_par_mid = M_r_n_par_mid*cos(n'.*theta);
-
-
-M_r_par_end_side = M_r_n_par_end_side*cos(n'.*theta);
-M_theta_par_end_side = M_theta_n_par_end_side*sin(n'.*theta);
-
-M_r_par_side = M_r_n_par_side*cos(n'.*theta);
-M_theta_par_side = M_theta_n_par_side*sin(n'.*theta);
-
-M_r_par = (M_r_n_par_mid+M_r_n_par_end_side+M_r_n_par_side)*cos(n'.*theta);
-M_theta_par = (M_theta_n_par_mid+M_theta_n_par_end_side+M_theta_n_par_side)*sin(n'.*theta);
-
     
 M_r_n = M_r_n_par_mid+M_r_n_par_end_side+M_r_n_par_side;
 M_theta_n = (M_theta_n_par_mid+M_theta_n_par_end_side+M_theta_n_par_side);
