@@ -7,7 +7,7 @@ runs = 1000;
 % Iron_loss_VARCOrot
 tic
 for ii = 1:runs
-    Iron_loss_VARCOrot % change this to any script you would like to check the runtime of
+    Iron_loss_CAL2 % change this to any script you would like to check the runtime of
 end
 
 delta_t = toc;
