@@ -1,6 +1,6 @@
 clearvars
 clc
-runs = 1000;
+runs = 10000;
 % Bemf_torque_constants
 % Inductance
 % PM_field_map

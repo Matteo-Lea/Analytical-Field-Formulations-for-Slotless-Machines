@@ -26,6 +26,8 @@ Inrunner
 
 %% outrunner example
 % Outrunner
+
+mapping = "no";
 %% useful indices for series harmonics definition
 m_J = 4;                                                                  % the total number of harmonics will be 2*(m_J+1)
 x = 0:1:m_J;
@@ -394,7 +396,7 @@ end
 %% FIGURES
 
 
-
+if contains(mapping, 'yes')
 % Create polar data
 [r_g,t] = meshgrid(r_g,theta);
 [r_w,t_w] = meshgrid(r_w,theta);
@@ -461,3 +463,4 @@ caxis([B_min B_max])
 axis off
 axis image
 title('Flux density norm map and isopotential lines in the whole 2D domain (optimal formulation)')
+end

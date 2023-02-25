@@ -23,7 +23,6 @@ mu_r = 1.05; % PM recoil permeability [-]
 alpha_p = 0.5; % mid-magnet to pole ratio [-]
 alpha_p1 = 0.7; % side-magnets + mid-magnet to pole ratio [-]  
 
-
 % machine/magnets configuration parameters
 Halbach = 0; % set 0 for even segments and 1 for odd segmens arrays 
 Halbach_1 = 2; % set number of segments per pole

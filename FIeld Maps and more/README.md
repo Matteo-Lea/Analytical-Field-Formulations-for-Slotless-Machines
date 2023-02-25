@@ -85,21 +85,6 @@ electrical machines design notes)
 
 %--------------------------------------------------------------------------
 
-Inductance.m
-
-%--------------------------------------------------------------------------
-
-I mean, the name says it all. This script gives you the motor inductance.
-You can find the different terms in the workspace after running it:
--) self-inductance "L_self"
--) mutual inductance "L_mut"
--) synchronous inductance "L_sync"
--) end-winding inductance Ls_ew (which uses an equation I got from my 
-electrical machines design notes)
--) terminal inductance assuming a star connection "L_star"
-
-%--------------------------------------------------------------------------
-
 Bemf_torque_constants.m
 
 %--------------------------------------------------------------------------
@@ -112,12 +97,24 @@ You can find the different terms in the workspace after running it:
 
 %--------------------------------------------------------------------------
 
+Speed_test.m
+
+%--------------------------------------------------------------------------
+
+With this script you can run a speed test of all the scripts in this folder
+just change the name of the script in the for loop to one of those listed
+above. Remember to remove the mapping feature within Armature_field_map.m 
+and PM_field_map.m if you enabled them. You can set how many times to run 
+the script through the variable "runs"
+
+%--------------------------------------------------------------------------
+
 If you find the topic intriguing and you believe you can contribute to 
 improve this work, just do that!
 
 NOTE: 
 the major flaw of all these codes is that they fill the workspace with a 
 lot of useless stuff. A much cleaner and more efficient way to structure 
-everything would to have all the scripts as callable functions so the 
+everything would be to have all the scripts as callable functions so the 
 output is just what you  need. Having just scripts makes it so much easier 
-to debug though.
+to debug though :)
