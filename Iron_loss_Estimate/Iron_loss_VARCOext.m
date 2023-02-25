@@ -189,7 +189,7 @@ K_B_n = (((-A_zm_n+n.*A_zm_n-mu_0*M_theta_n).*((mu_r+1)-(R_i/R_r).^(2*n)*(mu_r-1
         alpha_11f = -0.449288221156261;
         alpha_21f = 0.507332014433408;
         alpha_31f = 0.103107349390035;
-        K_h = 0.0149;
+        K_h1 = 0.0149;
 
         % Iron losses contributions with the  linear stator core discretization
         % method
@@ -203,12 +203,12 @@ K_B_n = (((-A_zm_n+n.*A_zm_n-mu_0*M_theta_n).*((mu_r+1)-(R_i/R_r).^(2*n)*(mu_r-1
         % Hysteresis contribution (single hysteresis loop)
         B_max_r = CORR*max((2*K_B_n./((R_s/R_se).^(2*n)-1).*((r_dis'/R_se).^(n-1).*(R_m/R_se).^(n+1)-(R_m./r_dis)'.^(n+1)))*cos(n'.*p.*Theta),[],2);
         B_max_theta = CORR*max(-(2*K_B_n./((R_s/R_se).^(2*n)-1).*((r_dis'/R_se).^(n-1).*(R_m/R_se).^(n+1)+(R_m./r_dis)'.^(n+1)))*sin(n'.*p.*Theta),[],2);
-        HY_loss_dis_rad_main = l_a*rho_Fe*K_h*(pi*((r_dis+delta_r/2).^2-(r_dis-delta_r/2).^2))*(B_max_r).^((alpha_01f)+(alpha_11f).*B_max_r+(alpha_21f).*B_max_r.^2+(alpha_31f).*B_max_r.^3)*f;
-        HY_loss_dis_tan_main = l_a*rho_Fe*K_h*(pi*((r_dis+delta_r/2).^2-(r_dis-delta_r/2).^2))*(B_max_theta).^((alpha_01f)+(alpha_11f).*B_max_theta+(alpha_21f).*B_max_theta.^2+(alpha_31f).*B_max_theta.^3)*f;
+        HY_loss_dis_rad_main = l_a*rho_Fe*K_h1*(pi*((r_dis+delta_r/2).^2-(r_dis-delta_r/2).^2))*(B_max_r).^((alpha_01f)+(alpha_11f).*B_max_r+(alpha_21f).*B_max_r.^2+(alpha_31f).*B_max_r.^3)*f;
+        HY_loss_dis_tan_main = l_a*rho_Fe*K_h1*(pi*((r_dis+delta_r/2).^2-(r_dis-delta_r/2).^2))*(B_max_theta).^((alpha_01f)+(alpha_11f).*B_max_theta+(alpha_21f).*B_max_theta.^2+(alpha_31f).*B_max_theta.^3)*f;
 
         % Hysteresis contribution (individual loop per harmonic)
-        HY_loss_dis_rad1 = (l_a*rho_Fe*(pi*((r_dis+delta_r/2).^2-(r_dis-delta_r/2).^2)))*(K_h.*abs(B_rad_n1).^((alpha_01f)+(alpha_11f).*B_rad_n1+(alpha_21f).*B_rad_n1.^2+(alpha_31f).*B_rad_n1.^3))*(f_h1)';
-        HY_loss_dis_tan1 = (l_a*rho_Fe*(pi*((r_dis+delta_r/2).^2-(r_dis-delta_r/2).^2)))*(K_h.*abs(B_tan_n1).^((alpha_01f)+(alpha_11f).*B_tan_n1+(alpha_21f).*B_tan_n1.^2+(alpha_31f).*B_tan_n1.^3))*(f_h1)';
+        HY_loss_dis_rad1 = (l_a*rho_Fe*(pi*((r_dis+delta_r/2).^2-(r_dis-delta_r/2).^2)))*(K_h1.*abs(B_rad_n1).^((alpha_01f)+(alpha_11f).*B_rad_n1+(alpha_21f).*B_rad_n1.^2+(alpha_31f).*B_rad_n1.^3))*(f_h1)';
+        HY_loss_dis_tan1 = (l_a*rho_Fe*(pi*((r_dis+delta_r/2).^2-(r_dis-delta_r/2).^2)))*(K_h1.*abs(B_tan_n1).^((alpha_01f)+(alpha_11f).*B_tan_n1+(alpha_21f).*B_tan_n1.^2+(alpha_31f).*B_tan_n1.^3))*(f_h1)';
 
         % Excess loss contribution
         EX_loss_dis_rad1 = (l_a*rho_Fe*(pi*((r_dis+delta_r/2).^2-(r_dis-delta_r/2).^2)))*((Ka_pol1(1) +Ka_pol1(2)*B_rad_n1 +Ka_pol1(3)*B_rad_n1.^2 +Ka_pol1(4)*B_rad_n1.^3 +Ka_pol1(5)*B_rad_n1.^4 +Ka_pol1(6)*B_rad_n1.^5 +Ka_pol1(7)*B_rad_n1.^6).*abs(B_rad_n1).^1.5)*(f_h1.^1.5)';

@@ -163,7 +163,7 @@ K_B_n = (((-A_zm_n+n.*A_zm_n-mu_0*M_theta_n).*((mu_r+1)-(R_i/R_r).^(2*n)*(mu_r-1
     % Iron loss analysis based on the two components equation with variable 
     % coefficients and constant flux density exponent for the hysteresis 
     % component:
-    % c1(f,B)*B^2*f^2 + c2(f,B)*B^2*f 
+    % Ke(f,B)*B^2*f^2 + Kh(f,B)*B^2*f 
 
     % The following part of the code, evaluates iron losses based on the above
     % written equation. The model is based on experimental loss data, which are
@@ -171,7 +171,7 @@ K_B_n = (((-A_zm_n+n.*A_zm_n-mu_0*M_theta_n).*((mu_r+1)-(R_i/R_r).^(2*n)*(mu_r-1
     % themselves). For this reason, the maximum frequency of the first range
     % (fr1) has to be set (the model can be extended to more ranges by
     % followingthe same coding fashion).
-    % In each frequency range the the dependency on the frequency itself is
+    % In each frequency range  the dependency on the frequency itself is
     % neglected.
 
     fr1 = 200; % break-point frequency
