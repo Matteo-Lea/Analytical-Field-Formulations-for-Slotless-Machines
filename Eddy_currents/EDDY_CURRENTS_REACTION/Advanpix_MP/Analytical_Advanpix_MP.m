@@ -18,12 +18,7 @@ Inverter_star_3f
 
 
 plotting = "no";
-% REDUCING TIME HARMONICS TO "SIGNIFICANT VALUES" for speedup
-% idx = (pos.*n.^2>0.1*max(pos(2:end).*n(2:end).^2));
-% pos = pos(idx);
-% n = n(idx);
-% phi_p = phi_p(idx);
-%--------------------------------------------------------------------------
+mapping = "no";
 
 % run(top)
 mu_0 = 4*pi*1e-7; % air permeability
@@ -177,4 +172,51 @@ if contains(plotting, "yes")
     J0 = real((1i*p*speed_radsec*cond*Amp_Az.*H).'*(cos(H*p*speed_radsec.*(t+shift)+phi+m.*(theta)) + 1i*sin(H*p*speed_radsec.*(t+shift)+phi+m.*(theta)))) ;
     figure
     plot(t,-J0)
+end
+
+if contains(mapping, 'yes')
+    
+    [r_m,ang_m] = meshgrid(linspace(R_r,R_m,20),linspace(-alpha_p*pi/(2*p),3*alpha_p*pi/(2*p),50));
+    r_mid = r_m(:)';
+    ang_mid = ang_m(:)';
+    m = repmat(m,1,length(r_mid));
+    J_m = besselj(m,mp(r_mid.*tau));
+    Y_m = bessely(m,mp(r_mid.*tau));
+    Amp_Az = C.*J_m + D.*Y_m;
+    Amp_Az(isnan(Amp_Az)) = 0;
+    Amp_Az(isinf(Amp_Az)) = 0;
+    t = 1.8223e-4;
+    Jz_COMSOL = real((1i*p*speed_radsec*cond*Amp_Az.*H).*(cos(H*p*speed_radsec.*(t)+phi+m.*(ang_mid)) + 1i*sin(H*p*speed_radsec.*(t)+phi+m.*(ang_mid)))) ;
+    Jz_COMSOL = (sum(-Jz_COMSOL));
+    Jmid_COMSOL = double(Jz_COMSOL);
+    Xmid = r_m.*cos(ang_m-alpha_p*pi/(2*p) + pi/(2));
+    Ymid = r_m.*sin(ang_m-alpha_p*pi/(2*p) + pi/(2));
+
+    Jmid_COMSOL  = griddata(r_mid, ang_mid, Jmid_COMSOL, r_m, ang_m);
+
+    th1 = -(alpha_p*pi/p);
+    th2 = +(alpha_p*pi/p);
+    figure
+    hold on
+    contourf(Xmid,Ymid,(Jmid_COMSOL),100,'edgecolor','none')
+    % contourf(Xsid,Ysid,(COMSOLsid),100,'edgecolor','none')
+    plot(R_r*sin(linspace(th1,th2,100)),R_r*cos(linspace(th1,th2,100)),'linewidth',0.8,'color','k');
+    plot(R_m*sin(linspace(th1,th2,100)),R_m*cos(linspace(th1,th2,100)),'linewidth',0.8,'color','k');
+    plot(R_s*sin(linspace(th1,th2,100)),R_s*cos(linspace(th1,th2,100)),'linewidth',0.8,'color','k');
+    plot(R_se*sin(linspace(th1,th2,100)),R_se*cos(linspace(th1,th2,100)),'linewidth',0.8,'color','k');
+    plot([R_r*sin(th1);R_m*sin(th1)],[R_r*cos(th1);R_m*cos(th1)],'linewidth',0.8,'color','k');
+    plot([R_r*sin(th2);R_m*sin(th2)],[R_r*cos(th2);R_m*cos(th2)],'linewidth',0.8,'color','k');
+    plot([R_r*sin(0);R_m*sin(0)],[R_r*cos(0);R_m*cos(0)],'linewidth',0.8,'color','k');
+    % Winding slots
+    plot(R_w*sin(linspace(th1,th2,100)),R_w*cos(linspace(th1,th2,100)),'linewidth',0.8,'color','k');
+    plot(R_wi*sin(linspace(th1,th2,100)),R_wi*cos(linspace(th1,th2,100)),'linewidth',0.8,'color','k');
+    plot([R_wi*sin(th1+pi/(6*p):pi/(3*p):th2-pi/(6*p));R_w*sin(th1+pi/(6*p):pi/(3*p):th2-pi/(6*p))],[R_wi*cos(th1+pi/(6*p):pi/(3*p):th2-pi/(6*p));R_w*cos(th1+pi/(6*p):pi/(3*p):th2-pi/(6*p))],'linewidth',0.8,'color','k');
+    set(gca,'visible','off');
+    colormap(jet)
+    c = colorbar;
+    c.Label.String = 'Flux density norm [T]';
+    caxis([-1e6 1e6])
+    axis off
+    axis image
+    
 end
