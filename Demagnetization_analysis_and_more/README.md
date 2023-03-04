@@ -1,19 +1,25 @@
 # Analytical-Field-Formulations-for-Slotless-Machines
 
-Diving into somo more application of Sub-Domain modeling here we are using
-the field solution in the stator yoke to estimate the iron losses.
-All the models use predefined laminations loss coefficients based on some 
-data I had (unfortunately I cannot share the data), but if you read my 
-paper [1] you will get a good guide on how find the different coefficients
-for any laminations loss dataset.
+This folder is the result of a pilot research where I tried to quantify
+the rsk of demagnetization in slotless PM machines under no-load 
+operation. For high-grade PM materials, simply increasing the rotor 
+temperature with an Halbach configuration, might lead to a local
+irreversible demagnetization; this leads to poor material utilization, and
+reduced performance. The goal was to related the "demagnetized volume" 
+(which can be done efficiently through the analytical model) to the 
+performance reduction. There might be a way to find a relationship between 
+the two, but I didn't have time to investigate it any further. What I did
+instead, was to develop an optimization algorithm to guide the design
+far from designs showing a high demagnetization risk.
+This is the publication presenting the work:
 
-[1] M. Leandro, N. Elloumi, A. Tessarolo and J. K. Nøland, "Analytical Iron
- Loss Evaluation in the Stator Yoke of Slotless Surface-Mounted PM 
-Machines," in IEEE Transactions on Industry Applications, vol. 58, no. 4, 
-pp. 4602-4613, July-Aug. 2022, doi: 10.1109/TIA.2022.3171528.
+[1] M. Leandro and J. K. Nøland, "A Penalty-Based PSO Algorithm for 
+Demagnetization Risk-Free Design of Slotless Halbach PM Machines," 2022 
+International Conference on Electrical Machines (ICEM), Valencia, Spain, 
+2022, pp. 276-281, doi: 10.1109/ICEM51905.2022.9910651.
 
 
-Short guide through the different scripts in this folder:
+Short guide through the different folders and scripts in this folder:
 
 Inrunner.m and Outrunner.m
 
