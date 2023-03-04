@@ -21,124 +21,97 @@ International Conference on Electrical Machines (ICEM), Valencia, Spain,
 
 Short guide through the different folders and scripts in this folder:
 
-Inrunner.m and Outrunner.m
+BH_curve.m
 
 %--------------------------------------------------------------------------
 
-Either of these two motors are loaded every time you run one of the other 
-scripts (just look for the line where they are called in each script and 
-you will see  which one is called). 
-They do nothing more but loading the motor geometry and some useful motor
-parameters needed to solve the field problem; it's like the Parameters
-definition under Global Definitions in Comsol if you are familiar with it.
-If you feel confident enough for changing the parameters, do so, but make 
-sure to understand what they mean first ;)
+This is a code I wrote to get the main magnets performance metrics given
+the PM BH curve. A lot of them are loaded in the folder PM_data (where the
+code takes the data from). The data is written to the PM_data.csv file. 
+Here you will find the PM grade name and the temperature of the input data, 
+the remanence, the recoil permeability, the knee-poin flux dnesity and the 
+demagnetization flux density from the identified airgap flux density
+
 
 %--------------------------------------------------------------------------
 
-Iron_loss_CCM.m
+IN THE FOLDER NAMED: Optimization
+
+Demag_optim.m
 
 %--------------------------------------------------------------------------
 
-This code uses the iron loss model based on constant coefficients 
-describing the laminations iron loss variation with flux density and 
-frequency, according to:
-Ke*B^2*f^2 + Kh*B^alpha*f + Ka*B^1.5*f^1.5
+This is a code you ca use to visualize the demagnetization map over one 
+pole of whatever motor you will give as an input. Since I used it to check
+the demagnetization map of the designs coming out of the optimization, you 
+will find the following three lines:
 
-'COEFF', 'B_exp' and 'f_exp' hold the loss coefficients, flux density 
-exponents and frequency exponents.
+polepairs = 'p=3'; % available [3 5 7 9 11 13 15 17 19]
+mode = 'NO_DEMAG'; % 'NO_DEMAG --> optimization without demagnetization
+                   % 'W_DEMAG --> optimization with demagnetization
+load(['RESULTS\' polepairs '\' mode '\' polepairs ])
 
-'CCM_loss_freq' and 'CCM_loss_time' hold the computed iron losses
-
-%--------------------------------------------------------------------------
-
-Iron_loss_CAL2.m
-
-%--------------------------------------------------------------------------
-
-This code uses the iron loss model based on the two components equation 
-with variable coefficients and constant flux density exponent for the 
-hysteresis component:
-   Ke(f,B)*B^2*f^2 + Kh(f,B)*B^2*f 
-
-The laminations loss data was divded into two frequency ranges wherein the
-dependency on the frequency for the different coefficients is neglected. 
-Within the two frequency ranges the coefficients for the polynomial models 
-describing the iron loss coefficients are:
--)'Kh_pol1', 'Ke_pol1' --> range 1
--)'Kh_pol2', 'Ke_pol2' --> range 2
-
-'CAL2_loss' holds the iron loss value
+By changing the entry of 'polpairs' and 'mode' you can access different 
+designs in the folder 'RESULTS'. But you can also uncomment the lines under 
+"test-geometry" and change the geometry to whatever you want to check. You 
+can also chnage the PM material data under "PM material properties"
 
 %--------------------------------------------------------------------------
 
-Iron_loss_VARCOext.m
+IN THE FOLDER NAMED: NO_DEMAG
+
+MAIN_optim.m
 
 %--------------------------------------------------------------------------
 
-This code uses the iron loss model based on the three components equation 
-with variable coefficients:
-   Ke(B)*B^2*f^2 + Kh(f)*B^alpha(B,f)*f + Ka(B)*B^1.5*f^1.5
-
-The laminations loss data was divded into two frequency ranges wherein the
-dependency on the frequency for the different coefficients is neglected. 
-Within the two frequency ranges the coefficients for the polynomial models 
-describing the iron loss coefficients are:
--)'Ka_pol1', 'Ke_pol1', 'alpha_01f', 'alpha_11f', 'alpha_21f', 'alpha_31f',
-  'K_h1' --> range 1
--)'Ka_pol2', 'Ke_pol2', 'alpha_02f', 'alpha_12f', 'alpha_22f', 'alpha_32f',
-  'K_h2' --> range 2
-
-'VARCO_loss' holds the iron loss value
+This script initiates the search ranges of the different optimization
+variables. The optimization algorithm is contained in the function 
+"MAIN_PSO.m". As I said, I haven't spent much time tweaking the algorithm
+to make something fancy, feel free to go through the implementation. The 
+main flaw of this optimization is the absence of several constraints which
+would probably make the algorithm discard several of the generated designs.
+But you can also redefine any constraint you'd like as an objective, and 
+feed it into the algorithm (probably easier said than done :)).
+By default, in "MAIN_PSO" the objective is the sume of the motor active 
+weight and the sum of the constraints violation given by the torque and
+back-emf defined in "MAIN_optim.m".
 
 %--------------------------------------------------------------------------
 
-Iron_loss_VARCOrot.m
+IN THE FOLDER NAMED: DEMAG_INCLUDED
+
+MAIN_optim.m
 
 %--------------------------------------------------------------------------
 
-This code uses the iron loss model based on the three components equation 
-with variable coefficients with the rotational correction 'rot' which is 
-assumed to be dependent on the flux density only:
-   (Ke(B)*B^2*f^2 + Kh(f)*B^alpha(B,f)*f + Ka(B)*B^1.5*f^1.5)*rot(B)
-
-The laminations loss data was divded into two frequency ranges wherein the
-dependency on the frequency for the different coefficients is neglected. 
-Within the two frequency ranges the coefficients for the polynomial models 
-describing the iron loss coefficients are:
--)'Ka_pol1', 'Ke_pol1', 'alpha_01f', 'alpha_11f', 'alpha_21f', 'alpha_31f',
-  'K_h1', 'rot' --> range 1
--)'Ka_pol2', 'Ke_pol2', 'alpha_02f', 'alpha_12f', 'alpha_22f', 'alpha_32f',
-  'K_h2', 'rot' --> range 2
-
-'VARCO_rot' holds the iron loss value
+It's exactly the same as the script described previously. The only 
+difference is the constraint on the admissible demagnetized volume 
+percentage defined along with the same torque and back-emf defined as 
+before.
 
 %--------------------------------------------------------------------------
 
-Iron_Loss_speed_sweep.m
+IN THE FOLDER NAMED: DEMAG_INCLUDED
+
+MAIN_optim.m
 
 %--------------------------------------------------------------------------
 
-This code uses all the different scripts described above to evaluate the 
-losses over a speed range defined in the variable 'speed'.
-In this way you will get a comparison of all the different loss models.
-Suggestion: in the input file 'Inrunner.m' if you change the stator 
-back-iron thickness by changing R_se you might be able to see a bigger 
-difference between the different models (since for the predefined motor 
-geometry, all the iron loss models give a good fit to the experimental data
-for the flux density value in the iron yoke)
+It's exactly the same as the script described previously. The only 
+difference here is that the function "Field_Solution_Demag.m" uses the
+GPU computational power to increase the computatioal performance of the
+algorithm. If you don't know whether you can use your GPU or not, you can 
+run:
+
+canUseGPU()
+
+You can run the script if you get 1 as a logical value.
 
 %--------------------------------------------------------------------------
 
-Speed_test.m
 
-%--------------------------------------------------------------------------
 
-With this script you can run a speed test of all the scripts in this folder
-just change the name of the script in the for loop to one of those listed
-above. You can set how many times to run the script through the variable 
-"runs"
 
-%--------------------------------------------------------------------------
+
 
 

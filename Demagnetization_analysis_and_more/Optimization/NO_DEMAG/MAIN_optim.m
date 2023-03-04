@@ -81,6 +81,7 @@ params.maxvel = 1;      % Maxmium vel in percentage
 params.u_mut = 0.5;     % Uniform mutation percentage
 params.m_PM = 400; % number of harmonics or series components for the magnetization functions
 
+% Objectives and constraints as objectives
 Torque = 5; % target torque [Nm]
 Back_emf = 50; % maximum back emf [V]
 Constraints = [Torque, Back_emf]; % constraints
