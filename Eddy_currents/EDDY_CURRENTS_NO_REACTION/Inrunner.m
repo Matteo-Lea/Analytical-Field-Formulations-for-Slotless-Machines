@@ -15,14 +15,12 @@ R_1 = R_m +g/2; % mid-air-gap radius [m]
 R_2 = R_s/2+R_se/2; % mid-stator radius
 p = 17;
 
-
 % machine/magnets configuration parameters
 B_r = 1.415; % remanent flux density [T] (mid-magnet)
 B_rs = B_r; % remanent flux density [T] (side-magnets)
 mu_r = 1.05; % PM recoil permeability [-]
 alpha_p = 0.5; % mid-magnet to pole ratio [-]
 alpha_p1 = 0.7; % side-magnets + mid-magnet to pole ratio [-]  
-
 
 % machine/magnets configuration parameters
 Halbach = 0; % set 0 for even segments and 1 for odd segmens arrays 

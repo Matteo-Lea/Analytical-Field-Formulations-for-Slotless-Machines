@@ -80,19 +80,19 @@ end
 % (WINDING REGION)
 if R_s>R_m %  inrunner
 
-    A_pl_J_w = A_nJ.*(R_wi.*(2-(R_wi/R_s).^(2*m).*(m-2)+m)-R_w*(R_wi/R_s).^(2*m).*(R_w/R_wi).^(m+1).*(2-m+(R_i/R_w).^(2*m).*(2+m)))./DEN_JI;
+    A_pl_J_w = A_nJ.*(R_ws.*(2-(R_ws/R_s).^(2*m).*(m-2)+m)-R_w*(R_ws/R_s).^(2*m).*(R_w/R_ws).^(m+1).*(2-m+(R_i/R_w).^(2*m).*(2+m)))./DEN_JI;
 
-    A_mi_J_w = A_nJ.*(R_wi*(R_w/R_wi).^(m-1).*(R_i/R_w).^(2*m).*(2-(R_wi/R_s).^(2*m).*(m-2)+m)-R_w*(2-m+(R_i/R_w).^(2*m).*(2+m)))./DEN_JI;
+    A_mi_J_w = A_nJ.*(R_ws*(R_w/R_ws).^(m-1).*(R_i/R_w).^(2*m).*(2-(R_ws/R_s).^(2*m).*(m-2)+m)-R_w*(2-m+(R_i/R_w).^(2*m).*(2+m)))./DEN_JI;
 
     if p == 2
-       A_pl_J_w(1) = R_wi*A_nJ(1)*(R_w^4+R_i^4-R_s^4-R_wi^4-4*R_s^4*log(R_wi)+4*R_i^4*log(R_w))/DEN_JI(1);
-       A_mi_J_w(1) = A_nJ(1)/R_w^3*(R_s^4*R_w^4-R_wi^4*R_i^4+4*R_s^4*R_i^4*log(R_w/R_wi))/DEN_JI(1);
+       A_pl_J_w(1) = R_ws*A_nJ(1)*(R_w^4+R_i^4-R_s^4-R_ws^4-4*R_s^4*log(R_ws)+4*R_i^4*log(R_w))/DEN_JI(1);
+       A_mi_J_w(1) = A_nJ(1)/R_w^3*(R_s^4*R_w^4-R_ws^4*R_i^4+4*R_s^4*R_i^4*log(R_w/R_ws))/DEN_JI(1);
     end
 
     i = 0;
-    FLUX_const = (n_cs*l_a*2*p/S_Ph*(1./(m+2).*A_pl_J_w./m.*R_wi^3.*(1-(R_w/R_wi).^(m+2))+1./(2-m).*A_mi_J_w./m.*R_w^3.*((R_w/R_wi).^(m-2)-1)+A_nJ./4.*(R_wi^4-R_w^4)));
+    FLUX_const = (n_cs*l_a*2*p/S_Ph*(1./(m+2).*A_pl_J_w./m.*R_ws^3.*(1-(R_w/R_ws).^(m+2))+1./(2-m).*A_mi_J_w./m.*R_w^3.*((R_w/R_ws).^(m-2)-1)+A_nJ./4.*(R_ws^4-R_w^4)));
     if p == 2
-        FLUX_const(1) = n_cs*l_a*2*p/S_Ph*(A_pl_J_w(1)/8.*R_wi^3.*(1-(R_w/R_wi)^(4))+A_mi_J_w(1)/2*R_w^3*ln(R_wi/R_w)+A_nJ/4*(R_wi^4-R_w^4));
+        FLUX_const(1) = n_cs*l_a*2*p/S_Ph*(A_pl_J_w(1)/8.*R_ws^3.*(1-(R_w/R_ws)^(4))+A_mi_J_w(1)/2*R_w^3*ln(R_ws/R_w)+A_nJ/4*(R_ws^4-R_w^4));
     end
     
     FLUX_self = FLUX_const.*1./m.*(sin(m*(2*i+1)*pi./(6*p))-sin(m*(2*i-1)*pi./(6*p)));
@@ -101,30 +101,30 @@ if R_s>R_m %  inrunner
     L_self = sum(FLUX_self)/I;
     L_mut = sum(FLUX_mut)/I;
     L_sync = L_self + L_mut;
-    pitch = pi* (2*R_w+2*R_wi)/2/p;
+    pitch = pi* (2*R_w+2*R_ws)/2/p;
     Ls_ew = 4*pi*1e-7*pitch/2*1.428*n_cs^2*p/2;
     L_ph = (Ls_ew+L_sync);
     L_star = 2*(Ls_ew+L_sync);
     
 else % outrunner
     
-    A_pl_J_w = A_nJ.*(R_w.*(2-(R_w/R_i).^(2*m).*(m-2)+m)-R_wi*(R_w/R_i).^(2*m).*(R_wi/R_w).^(m+1).*(2-m+(R_s/R_wi).^(2*m).*(2+m)))./DEN_JO;
+    A_pl_J_w = A_nJ.*(R_w.*(2-(R_w/R_i).^(2*m).*(m-2)+m)-R_ws*(R_w/R_i).^(2*m).*(R_ws/R_w).^(m+1).*(2-m+(R_s/R_ws).^(2*m).*(2+m)))./DEN_JO;
 
-    A_mi_J_w = A_nJ.*(R_w*(R_wi/R_w).^(m-1).*(R_s/R_wi).^(2*m).*(2-(R_w/R_i).^(2*m).*(m-2)+m)+R_wi*(m-2-(R_s/R_wi).^(2*m).*(2+m)))./DEN_JO;
+    A_mi_J_w = A_nJ.*(R_w*(R_ws/R_w).^(m-1).*(R_s/R_ws).^(2*m).*(2-(R_w/R_i).^(2*m).*(m-2)+m)+R_ws*(m-2-(R_s/R_ws).^(2*m).*(2+m)))./DEN_JO;
 
     if p == 2
-       A_pl_J_w(1) = R_w*A_nJ(1)*(R_w^4+R_i^4-R_s^4-R_wi^4-4*R_s^4*log(R_wi)+4*R_i^4*log(R_w))/DEN_JO(1);
-       A_mi_J_w(1) = A_nJ(1)/R_wi^3*(R_s^4*R_w^4-R_wi^4*R_i^4+4*R_s^4*R_i^4*log(R_w/R_wi))/DEN_JO(1);
+       A_pl_J_w(1) = R_w*A_nJ(1)*(R_w^4+R_i^4-R_s^4-R_ws^4-4*R_s^4*log(R_ws)+4*R_i^4*log(R_w))/DEN_JO(1);
+       A_mi_J_w(1) = A_nJ(1)/R_ws^3*(R_s^4*R_w^4-R_ws^4*R_i^4+4*R_s^4*R_i^4*log(R_w/R_ws))/DEN_JO(1);
        if R_i == Inf 
           A_pl_J_w(1) = R_w*A_nJ(1)*(1+4*log(R_w))/DEN_JO(1); 
-          A_mi_J_w(1) = A_nJ(1)/R_wi^3*(4*R_s^4*log(R_w/R_wi)-R_wi^4)/DEN_JO(1);
+          A_mi_J_w(1) = A_nJ(1)/R_ws^3*(4*R_s^4*log(R_w/R_ws)-R_ws^4)/DEN_JO(1);
        end
     end
     
     i = 0;
-    FLUX_const = n_cs*l_a*2*p/S_Ph*(1./(m+2).*A_pl_J_w./m.*R_w^3.*(1-(R_wi/R_w).^(m+2))+1./(2-m).*A_mi_J_w./m.*R_wi^3.*((R_wi/R_w).^(m-2)-1)+A_nJ./4.*(R_w^4-R_wi^4));
+    FLUX_const = n_cs*l_a*2*p/S_Ph*(1./(m+2).*A_pl_J_w./m.*R_w^3.*(1-(R_ws/R_w).^(m+2))+1./(2-m).*A_mi_J_w./m.*R_ws^3.*((R_ws/R_w).^(m-2)-1)+A_nJ./4.*(R_w^4-R_ws^4));
     if p == 2
-        FLUX_const(1) = n_cs*l_a*2*p/S_Ph*(A_pl_J_w(1)/8.*R_w^3.*(1-(R_wi/R_w)^(4))+A_mi_J_w(1)/2*R_wi^3*ln(R_w/R_wi)+A_nJ/4*(R_w^4-R_wi^4));
+        FLUX_const(1) = n_cs*l_a*2*p/S_Ph*(A_pl_J_w(1)/8.*R_w^3.*(1-(R_ws/R_w)^(4))+A_mi_J_w(1)/2*R_ws^3*ln(R_w/R_ws)+A_nJ/4*(R_w^4-R_ws^4));
     end
     
     FLUX_self = FLUX_const.*1./m.*(sin(m*(2*i+1)*pi./(6*p))-sin(m*(2*i-1)*pi./(6*p)));
@@ -133,7 +133,7 @@ else % outrunner
     L_self = sum(FLUX_self)/I;
     L_mut = sum(FLUX_mut)/I;
     L_sync = L_self + L_mut;
-    pitch = pi* (2*R_w+2*R_wi)/2/p;
+    pitch = pi* (2*R_w+2*R_ws)/2/p;
     Ls_ew = 4*pi*1e-7*pitch/2*1.428*n_cs^2*p/2;
     L_ph = (Ls_ew+L_sync);
     L_star = 2*(Ls_ew+L_sync);

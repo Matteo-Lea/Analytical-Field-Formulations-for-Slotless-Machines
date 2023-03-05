@@ -75,7 +75,7 @@ else
     theta_m_end = theta_m_end; % orientation angle end-side-magnet [deg]
 end
 
-S_Ph = abs(pi*(R_wi^2-R_w^2)/(6*p)); % phase belt cross section
+S_Ph = abs(pi*(R_ws^2-R_w^2)/(6*p)); % phase belt cross section
 N_tc = 3; % number of conductors per coil
 q = 1; %coils per pole and per phase
 b = 1; % parallel ways per phase

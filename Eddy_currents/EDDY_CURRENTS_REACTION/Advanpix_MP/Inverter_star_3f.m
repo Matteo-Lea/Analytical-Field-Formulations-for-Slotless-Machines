@@ -24,7 +24,7 @@ L = L_ph; % phase inductance [H]
 R = 10e-3; % phase resistance [ohm]
 VDC = 45; % available DC voltage [V]
 % rpm = 2500; % rotational speed [rpm]
-radsec = rpm*2*pi/60; % angular frequency [rad/sec]
+radsec = speed_rpm*2*pi/60; % angular frequency [rad/sec]
 radsec_e = p*radsec; % electrical angular frequency [rad/sec]
 
 fsw = 10000;
