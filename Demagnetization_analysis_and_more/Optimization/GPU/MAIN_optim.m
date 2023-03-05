@@ -9,6 +9,10 @@
 clearvars
 clc
 close all
+if canUseGPU() == 0
+    X = ['It looks like there''s no GPU you can use to run this. Check \n', 'https://se.mathworks.com/help/releases/R2021b/parallel-computing/gpu-support-by-release.html \n', 'for further assistance'];
+    error( 'u:stuffed:it' , X );
+end
 tic
 % machine/magnets configuration parameters
 el = 100; % population for magnets configuration (set it a multiple of 4)

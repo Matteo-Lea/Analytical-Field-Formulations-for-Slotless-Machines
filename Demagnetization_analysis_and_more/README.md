@@ -105,7 +105,7 @@ run:
 
 canUseGPU()
 
-You can run the script if you get 1 as a logical value.
+You can run the script if you get 1 as a logical value .
 
 %--------------------------------------------------------------------------
 
