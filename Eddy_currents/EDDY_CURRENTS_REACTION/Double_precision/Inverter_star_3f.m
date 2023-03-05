@@ -4,15 +4,14 @@
 
 
 
-top = 'Inrunner'; % Choose either 'Inrunner' or 'Outrunner'
 
 % back-emf and torque constant are obtained from the analytical PM field
 % solution
 Bemf_torque_constants
-clearvars -except k_t k_v p top runs
+% clearvars -except k_t k_v p top runs
 % inductance is obtained from the armature field solution
 Inductance
-clearvars -except k_t k_v p L_ph top runs
+% clearvars -except k_t k_v p L_ph top runs
 
 % a target torque is set, the related target current is obtained from the
 % torque constant. Given the current, and the operation in MTPA, the
@@ -24,7 +23,7 @@ I = Torque/k_t; % peak fundamental current [A]
 L = L_ph; % phase inductance [H]
 R = 10e-3; % phase resistance [ohm]
 VDC = 45; % available DC voltage [V]
-rpm = 2500; % rotational speed [rpm]
+% rpm = 2500; % rotational speed [rpm]
 radsec = rpm*2*pi/60; % angular frequency [rad/sec]
 radsec_e = p*radsec; % electrical angular frequency [rad/sec]
 
@@ -201,21 +200,21 @@ t = linspace(0,mult*T_fund,floor(mult*N/2)); % time discretization
 %Phase a post-processing
 series = timeseries(FULL_a,Full_time);
 Current_per_a = resample(series,samp,'linear'); % one period current  resampled
-[ah_a,bh_a] = fft_femm([Current_per_a.Time Current_per_a.Data]);
+[ah_a,bh_a] = fft_mod([Current_per_a.Time Current_per_a.Data]);
 ch_a = sqrt(ah_a(2:end).^2+bh_a(2:end).^2);
 phi_h_a = -atan2(bh_a(2:end),ah_a(2:end));
 
 % Phase b post-processing
 series = timeseries(FULL_b,Full_time);
 Current_per_b = resample(series,samp,'linear'); % one period current resampled
-[ah_b,bh_b] = fft_femm([Current_per_b.Time Current_per_b.Data]);
+[ah_b,bh_b] = fft_mod([Current_per_b.Time Current_per_b.Data]);
 ch_b = sqrt(ah_b(2:end).^2+bh_b(2:end).^2);
 phi_h_b = -atan2(bh_b(2:end),ah_b(2:end));
 
 % Phase c post-processing
 series = timeseries(FULL_c,Full_time);
 Current_per_c = resample(series,samp,'linear'); % one period current resampled
-[ah_c,bh_c] = fft_femm([Current_per_c.Time Current_per_c.Data]);
+[ah_c,bh_c] = fft_mod([Current_per_c.Time Current_per_c.Data]);
 ch_c = sqrt(ah_c(2:end).^2+bh_c(2:end).^2);
 phi_h_c = -atan2(bh_c(2:end),ah_c(2:end));
 

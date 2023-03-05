@@ -1,4 +1,4 @@
-function [ah,bh]=fft_femm(x)
+function [ah,bh]=fft_mod(x)
 
 x2=x(:,2);
 

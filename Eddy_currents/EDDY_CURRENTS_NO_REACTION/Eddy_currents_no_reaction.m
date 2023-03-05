@@ -29,26 +29,28 @@
 Inverter_star_3f
 clearvars -except n top pos neg phi_p phi_n T_fund runs
 
-% REDUCING TIME HARMONICS TO "SIGNIFICANT VALUES" for speedup
-% idx = (ch_a.*n.^2>0.001*max(ch_a(2:end).*n(2:end).^2));
-% ch_a = ch_a(idx);
-% n = n(idx);
-% phi_h_a = phi_h_a(idx);
-%--------------------------------------------------------------------------
+map = 'no'; % 'yes' if current density map is wanted 'no' otherwise!
+plotting = 'no'; % 'yes' if debugging is needed (plots and other stuff)
 
 Inrunner
-map = 'no'; % 'yes' if current density map is wanted 'no' otherwise!
-wanna_debug = 'no'; % 'yes' if debugging is needed (plots and other stuff)
+omega = 2500*2*pi/60; % mechanical angular frequency [rad/s]
+
+if contains(plotting, 'yes')
+    t = linspace(0,T_fund,length(n));
+    figure;hold on
+    plot(t,(pos)'*cos(n.*p*omega*t+phi_p)+(neg)'*cos(n.*p*omega*t+phi_n))
+    plot(t,(pos)'*cos(n.*p*omega*t+phi_p-2/3*pi)+(neg)'*cos(n.*p*omega*t+phi_n+2/3*pi))
+    plot(t,(pos)'*cos(n.*p*omega*t+phi_p-4/3*pi)+(neg)'*cos(n.*p*omega*t+phi_n+4/3*pi))
+     
+end
 
 cond = 0.667*1e6;                                                           % PM conductivity [S/m]
 mu_0 = 4*pi*1e-7; % air permeability
-omega = 2500*2*pi/60; % mechanical angular frequency [rad/s]
+
 
 alpha_m = 0.5;
 theta_mid = alpha_m*pi/p;
 theta_side = (1-alpha_m)*pi/p;
-mid_pos = 0;
-side_pos = pi/(2*p);
 %% outrunner example
 % Outrunner
 %% useful indices for series harmonics definition
@@ -73,10 +75,6 @@ pos_m = k_minus_n;
 neg_m = pos_m;
 pos_p = k_plus_n;
 neg_p = pos_p;
-% pos_m = pos_m.*(mod(TL_m,3)==0);
-% neg_m(mod(TL_p,3)~=0)=0;
-% neg_p = neg_p.*(mod(TL_m,3)==0);
-% pos_p(mod(TL_p,3)~=0)=0;
 
 filt = [(mod(TL_m,3)==0), mod(TL_p,3)==0, mod(TL_p,3)==0, (mod(TL_m,3)==0)];
 
@@ -124,9 +122,9 @@ if p == 2
 end
 
 % Phase-a field coefficient
-    A_J = ((R_w/R_wi).^m.*(R_wi/R_s).^(2*m).*(R_w^2*(R_w/R_wi).^m-R_wi^2).*A_mJ.*(m-2)-((R_w^2-R_wi^2*(R_w/R_wi).^m).*A_mJ.*(m+2)))./(R_w*DEN_JI);   
+    A_J = ((R_w/R_ws).^m.*(R_ws/R_s).^(2*m).*(R_w^2*(R_w/R_ws).^m-R_ws^2).*A_mJ.*(m-2)-((R_w^2-R_ws^2*(R_w/R_ws).^m).*A_mJ.*(m+2)))./(R_w*DEN_JI);   
     if p == 2
-       A_J(1) = A_mJ(1)*R_w*(R_w^4-R_wi^4+4*R_s^4*log(R_w/R_wi))/DEN_JI(1);
+       A_J(1) = A_mJ(1)*R_w*(R_w^4-R_ws^4+4*R_s^4*log(R_w/R_ws))/DEN_JI(1);
     end
 
 P1 = l_a*cond*(R_w^2*A_J./m.*H*p*omega).^2./2;
@@ -175,25 +173,7 @@ for k = 1:length(start)
 end
 %--------------------------------------------------------------------------
 
-    
-%     [S, idx] = sort(H(:).'); % the harmonic matrix TL is sorted over a row vector
-%     % consecutive elements give zero difference,
-%     % i.e., they are equal (a zero is added at the
-%     % beginning for the first element)
-%     C = intersect(S,S); 
-%     C(C==0) = [];
-% 
-%     seq = cell(length(C),1);
-%     for k = 1:length(C)
-%         dex = find(ismember(S,C(k)))';
-%         temp = length(dex);
-%         seq{k} = [idx(dex)', idx(dex)'];
-%         if temp>1
-%             seq{k} = [seq{k};nchoosek(idx(dex)',2)]; % probably possible to replace flip with repmat in first nchoosek
-%         end
-%     end
-% 
-    seq = cell2mat(seq);
+seq = cell2mat(seq);
 
 m_i = m(seq(:,1));
 m_j = m(seq(:,2));
@@ -227,7 +207,7 @@ side_pos = pi/(2*p);
 %% AIRGAP/MAGNETS/AIR-BACKING REGION    
 % HARMONICS COEFFICIENTS FROM THE MAGNETIC VECTOR POTENTIAL
 % (AIR-GAP/MAGNETS/(NON-MAGNETIC-BACKING) REGIONS)
-if R_s>R_m %  inrunner
+% ONLY INRUNNER IMPLEMENTED 
     
     % HARMONICS COEFFICIENTS FROM THE MAGNETIC VECTOR POTENTIAL
     % coefficients which keep constant in the different regions
@@ -240,10 +220,10 @@ if R_s>R_m %  inrunner
     end
     
     % Phase-a field coefficient
-    A_Ji = ((R_w/R_wi).^m_i.*(R_wi/R_s).^(2*m_i).*(R_w^2*(R_w/R_wi).^m_i-R_wi^2).*A_mJi.*(m_i-2)-((R_w^2-R_wi^2*(R_w/R_wi).^m_i).*A_mJi.*(m_i+2)))./(R_w*DEN_JIi); 
-    A_Jj = ((R_w/R_wi).^m_j.*(R_wi/R_s).^(2*m_j).*(R_w^2*(R_w/R_wi).^m_j-R_wi^2).*A_mJj.*(m_j-2)-((R_w^2-R_wi^2*(R_w/R_wi).^m_j).*A_mJj.*(m_j+2)))./(R_w*DEN_JIj);
+    A_Ji = ((R_w/R_ws).^m_i.*(R_ws/R_s).^(2*m_i).*(R_w^2*(R_w/R_ws).^m_i-R_ws^2).*A_mJi.*(m_i-2)-((R_w^2-R_ws^2*(R_w/R_ws).^m_i).*A_mJi.*(m_i+2)))./(R_w*DEN_JIi); 
+    A_Jj = ((R_w/R_ws).^m_j.*(R_ws/R_s).^(2*m_j).*(R_w^2*(R_w/R_ws).^m_j-R_ws^2).*A_mJj.*(m_j-2)-((R_w^2-R_ws^2*(R_w/R_ws).^m_j).*A_mJj.*(m_j+2)))./(R_w*DEN_JIj);
     if p == 2
-       A_J(1) = A_mJ(1)*R_w*(R_w^4-R_wi^4+4*R_s^4*log(R_w/R_wi))/DEN_JIi(1);
+       A_J(1) = A_mJ(1)*R_w*(R_w^4-R_ws^4+4*R_s^4*log(R_w/R_ws))/DEN_JIi(1);
     end
  
     R0 = 1./(m_j+m_i+2).*((R_m/R_w).^(m_j+m_i)*R_m^2-(R_r/R_w).^(m_j+m_i)*R_r^2);
@@ -281,33 +261,6 @@ if R_s>R_m %  inrunner
     end
 
     seq = cell2mat(seq);
-    
-%     TL = H;
-%     [S, idx] = sort(TL(:).'); % the harmonic matrix TL is sorted over a row vector
-%     % consecutive elements give zero difference,
-%     % i.e., they are equal (a zero is added at the
-%     % beginning for the first element)
-%     D = -H;
-%     [D, ind] = sort(D(:).'); % the harmonic matrix TL is sorted over a row vector
-%     C = intersect(H,-H); 
-%     C(C==0) = [];
-% 
-%     % The following procedure makes sure that elements from (ki-nl) are
-%     % only compared with elements of -(ki-nl) as the comparison of (ki-nl)
-%     % with itself was done at the previous step.
-%     seq = cell(length(C),1);
-%     for k = 1:length(C)
-%         dex1 = find(ismember(D,C(k)));
-%         temp1 = length(dex1);
-%         dex = find(ismember(S,C(k)))';
-%         temp = length(dex);
-%         dex1 = reshape(repmat(dex1,temp,1),[],1);
-%         dex = repmat(dex,temp1,1);
-%         seq{k} = [idx(dex)', ind(dex1)'];
-%     end
-% 
-%     seq = cell2mat(seq);
-
 
     m_i = m(seq(:,1));
     m_j = m(seq(:,2));
@@ -342,10 +295,10 @@ if R_s>R_m %  inrunner
     end
     
     % Phase-a field coefficient
-    A_Ji = ((R_w/R_wi).^m_i.*(R_wi/R_s).^(2*m_i).*(R_w^2*(R_w/R_wi).^m_i-R_wi^2).*A_mJi.*(m_i-2)-((R_w^2-R_wi^2*(R_w/R_wi).^m_i).*A_mJi.*(m_i+2)))./(R_w*DEN_JIi); 
-    A_Jj = ((R_w/R_wi).^m_j.*(R_wi/R_s).^(2*m_j).*(R_w^2*(R_w/R_wi).^m_j-R_wi^2).*A_mJj.*(m_j-2)-((R_w^2-R_wi^2*(R_w/R_wi).^m_j).*A_mJj.*(m_j+2)))./(R_w*DEN_JIj);
+    A_Ji = ((R_w/R_ws).^m_i.*(R_ws/R_s).^(2*m_i).*(R_w^2*(R_w/R_ws).^m_i-R_ws^2).*A_mJi.*(m_i-2)-((R_w^2-R_ws^2*(R_w/R_ws).^m_i).*A_mJi.*(m_i+2)))./(R_w*DEN_JIi); 
+    A_Jj = ((R_w/R_ws).^m_j.*(R_ws/R_s).^(2*m_j).*(R_w^2*(R_w/R_ws).^m_j-R_ws^2).*A_mJj.*(m_j-2)-((R_w^2-R_ws^2*(R_w/R_ws).^m_j).*A_mJj.*(m_j+2)))./(R_w*DEN_JIj);
     if p == 2
-       A_J(1) = A_mJ(1)*R_w*(R_w^4-R_wi^4+4*R_s^4*log(R_w/R_wi))/DEN_JIi(1);
+       A_J(1) = A_mJ(1)*R_w*(R_w^4-R_ws^4+4*R_s^4*log(R_w/R_ws))/DEN_JIi(1);
     end
     
     R0 = 1./(m_j+m_i+2).*((R_m/R_w).^(m_j+m_i)*R_m^2-(R_r/R_w).^(m_j+m_i)*R_r^2);
@@ -383,7 +336,7 @@ TOT = P_mid_main+P_tot_mid + P_side_main+P_tot_side
 
 
 %% SOME DEBUGGING
-if contains(wanna_debug, 'yes')
+if contains(plotting, 'yes')
 r = (R_m+R_r)/2; % test radius 
 Amp = R_w.*A_J./m.*((r/R_w).^m+(R_i/R_w).^m.*(R_i/r).^m);
     
@@ -394,23 +347,12 @@ J0 = squeeze(sum(sum(J0,2),1));
 figure
 plot(J0)
 
-% COMSOL PLOTTING
-% figure
-% plot(linspace (0,T_fund,size(n,1)+1),J0)
-% plot(linspace(0,pi/p,length(Bmr(:,1)))-pi/(2*p),Bmr(:,2))
-%________________________________________________________________________
 
 Az = Amp.*(cos(H*p*omega.*t+phi+m.*(theta)));
     test = squeeze(sum(sum(Az,2),1));
     figure
     plot(linspace (0,T_fund,size(n,1)+1),test)
 
-
-
-% Ja = -cond*(4*R_w^3*A_J./(theta_mid*(R_m^2-R_r^2)*m)).*(1./(m+2).*((R_m/R_w).^(m+2)-(R_r/R_w).^(m+2))+1./(2-m).*(R_i/R_w).^(m+2).*((R_i/R_m).^(m-2)-(R_i/R_r).^(m-2))).*(TL*p*omega./(m)).*sin(m*theta_mid./2).*sin(TL*p*omega*0E-4+sign_f.*phi_h_a);
-% JA_sum = sum(sum(Ja));
-
-else
 end
 
 %% MAPPPING
@@ -420,8 +362,7 @@ if contains(map, 'yes')
     theta_m = repmat(shiftdim(linspace(-alpha_p*pi/(2*p),alpha_p*pi/(2*p),100),-2),1,1,size(r_mid,3),1);
     r_mid = repmat(r_mid,1,1,1,size(theta_m,4));
     Amp = R_w.*A_J./m.*((r_mid/R_w).^m+(R_i/R_w).^m.*(R_i/r_mid).^m);
-
-%     t = repmat(shiftdim(linspace (0,0.008,size(n,1)+1),-1),size(n,1),size(m,2));
+    
     t = 1.822277847309136e-04;
     
     J0 = p*omega*cond*Amp.*H.*sin(H*p*omega.*t+phi+m.*(theta_m)) ;
@@ -435,9 +376,6 @@ if contains(map, 'yes')
     theta_s = repmat(shiftdim(linspace(alpha_p*pi/(2*p),(1-alpha_p/2)*pi/(p),100),-2),1,1,size(r_side,3),1);
     r_side = repmat(r_side,1,1,1,size(theta_s,4));
     Amp = R_w.*A_J./m.*((r_side/R_w).^m+(R_i/R_w).^m.*(R_i/r_side).^m);
-
-%     t = repmat(shiftdim(linspace (0,0.008,size(n,1)+1),-1),size(n,1),size(m,2));
-    
     
     J0 = p*omega*cond*Amp.*H.*sin(H*p*omega.*t+phi+m.*(theta_s)) ;
     J0 = squeeze(sum(sum(J0,2),1));
@@ -446,9 +384,6 @@ if contains(map, 'yes')
     Ja = -cond*(4*R_w^3*A_J./(theta_side*(R_m^2-R_r^2)*m)).*(1./(m+2).*((R_m/R_w).^(m+2)-(R_r/R_w).^(m+2))+1./(2-m).*(R_i/R_w).^(m+2).*((R_i/R_m).^(m-2)-(R_i/R_r).^(m-2))).*(H*p*omega./(m)).*sin(m*theta_side./2).*sin(H*p*omega*t+phi+m*side_pos);
     J_side = J0 + sum(sum(Ja));
     
-    
-%     [r_m,t_m] = meshgrid(linspace(R_r,R_m,10),-linspace(-alpha_p*pi/(2*p),alpha_p*pi/(2*p),100));
-%     [r_s,t_s] = meshgrid(linspace(R_r,R_m,10),-linspace(alpha_p*pi/(2*p),(1-alpha_p/2)*pi/(p),100));
     [r_m,t_m] = meshgrid(linspace(R_r,R_m,10),-linspace(-alpha_p*pi/(p),0,100));
     [r_s,t_s] = meshgrid(linspace(R_r,R_m,10),-linspace(0,alpha_p*pi/(p),100));
     x_m = r_m.*sin(t_m);
@@ -456,49 +391,12 @@ if contains(map, 'yes')
     x_s = r_s.*sin(t_s);
     y_s = r_s.*cos(t_s);
     
-%     theta = -linspace(-alpha_p*pi/(2*p),(1-alpha_p/2)*pi/(p),10); % circumferential discretization (leave the -pi/(2*p))
     theta = -linspace(-alpha_p*pi/(p),(alpha_p)*pi/(p),10); % circumferential discretization (leave the -pi/(2*p))
     
     J_max = max(abs([min(min(J_mid)) min(min(J_side)) max(max(J_mid)) max(max(J_side))]));
-%     J_levels = linspace(-J_max,J_max,100);
     J_levels = 100;
     th1 = -(alpha_m*pi/p);
     th2 = +(alpha_m*pi/p);
-
-   
-    % COMSOL PLOTTING
-%     xmid = linspace(min(Currentmap(:,1)),max(Currentmap(:,1)),1000)/1000;     % ‘x’ Vector For Interpolation
-%     ymid = linspace(min(Currentmap(:,2)),max(Currentmap(:,2)),1000)/1000;     % ‘y’ Vector For Interpolation
-%     [Xmid,Ymid] = ndgrid(xmid,ymid);                                                  % Create Interpolation Grids
-%     Zmid = griddata(Currentmap(:,1)/1000, Currentmap(:,2)/1000, Currentmap(:,3), Xmid, Ymid);
-%     
-%     xsid = linspace(min(Currentmaps(:,1)),max(Currentmaps(:,1)),1000)/1000;     % ‘x’ Vector For Interpolation
-%     ysid = linspace(min(Currentmaps(:,2)),max(Currentmaps(:,2)),1000)/1000;     % ‘y’ Vector For Interpolation
-%     [Xsid,Ysid] = ndgrid(xsid,ysid);                                                  % Create Interpolation Grids
-%     Zsid = griddata(Currentmaps(:,1)/1000, Currentmaps(:,2)/1000, Currentmaps(:,3), Xsid, Ysid);
-%     figure
-%     hold on
-%     contourf(Xmid,Ymid,Zmid,100,'edgecolor','none')
-%     contourf(Xsid,Ysid,Zsid,100,'edgecolor','none')
-%     plot(R_r*sin(linspace(th1,th2,100)),R_r*cos(linspace(th1,th2,100)),'linewidth',0.8,'color','k');
-%     plot(R_m*sin(linspace(th1,th2,100)),R_m*cos(linspace(th1,th2,100)),'linewidth',0.8,'color','k');
-%     plot(R_s*sin(linspace(th1,th2,100)),R_s*cos(linspace(th1,th2,100)),'linewidth',0.8,'color','k');
-%     plot(R_se*sin(linspace(th1,th2,100)),R_se*cos(linspace(th1,th2,100)),'linewidth',0.8,'color','k');
-%     plot([R_r*sin(th1);R_m*sin(th1)],[R_r*cos(th1);R_m*cos(th1)],'linewidth',0.8,'color','k');
-%     plot([R_r*sin(th2);R_m*sin(th2)],[R_r*cos(th2);R_m*cos(th2)],'linewidth',0.8,'color','k');
-%     plot([R_r*sin(0);R_m*sin(0)],[R_r*cos(0);R_m*cos(0)],'linewidth',0.8,'color','k');
-%     % Winding slots
-%     plot(R_w*sin(linspace(th1,th2,100)),R_w*cos(linspace(th1,th2,100)),'linewidth',0.8,'color','k');
-%     plot(R_wi*sin(linspace(th1,th2,100)),R_wi*cos(linspace(th1,th2,100)),'linewidth',0.8,'color','k');
-%     plot([R_wi*sin(th1+pi/(6*p):pi/(3*p):th2-pi/(6*p));R_w*sin(th1+pi/(6*p):pi/(3*p):th2-pi/(6*p))],[R_wi*cos(th1+pi/(6*p):pi/(3*p):th2-pi/(6*p));R_w*cos(th1+pi/(6*p):pi/(3*p):th2-pi/(6*p))],'linewidth',0.8,'color','k');
-%     set(gca,'visible','off');
-%     colormap(jet)
-%     c = colorbar;
-%     c.Label.String = 'Flux density norm [T]';
-%     caxis([-2e6 2e6])
-%     axis off
-%     axis image
-%     title({'Induced current density map',' in the magnets region'})
     %---------------------------------------------------------------------
     
     figure;
@@ -514,68 +412,17 @@ if contains(map, 'yes')
     plot([R_r*sin(0);R_m*sin(0)],[R_r*cos(0);R_m*cos(0)],'linewidth',0.8,'color','k');
     % Winding slots
     plot(R_w*sin(linspace(th1,th2,100)),R_w*cos(linspace(th1,th2,100)),'linewidth',0.8,'color','k');
-    plot(R_wi*sin(linspace(th1,th2,100)),R_wi*cos(linspace(th1,th2,100)),'linewidth',0.8,'color','k');
-    plot([R_wi*sin(th1+pi/(6*p):pi/(3*p):th2-pi/(6*p));R_w*sin(th1+pi/(6*p):pi/(3*p):th2-pi/(6*p))],[R_wi*cos(th1+pi/(6*p):pi/(3*p):th2-pi/(6*p));R_w*cos(th1+pi/(6*p):pi/(3*p):th2-pi/(6*p))],'linewidth',0.8,'color','k');
+    plot(R_ws*sin(linspace(th1,th2,100)),R_ws*cos(linspace(th1,th2,100)),'linewidth',0.8,'color','k');
+    plot([R_ws*sin(th1+pi/(6*p):pi/(3*p):th2-pi/(6*p));R_w*sin(th1+pi/(6*p):pi/(3*p):th2-pi/(6*p))],[R_ws*cos(th1+pi/(6*p):pi/(3*p):th2-pi/(6*p));R_w*cos(th1+pi/(6*p):pi/(3*p):th2-pi/(6*p))],'linewidth',0.8,'color','k');
     set(gca,'visible','off');
     colormap(jet)
     c = colorbar;
     c.Label.String = 'Flux density norm [T]';
     caxis([-2e6 2e6])
-%     caxis([-J_max J_max])
-    % Hide the POLAR function data and leave annotations
-    % set(h,'Visible','off')
-    % set(h_m,'Visible','off')
-    % Turn off axes and set square aspect ratio
     axis off
     axis image
     % camroll(-90)
     title({'Induced current density map',' in the magnets region'})
     
-   
-
-
-else
 end
 
-
-
-
-else % outrunner
-    
-    
-         DEN_JOi = 2*((R_s/R_i).^(2*m)-1);
-         if p == 2i
-            DEN_JO(1) = DEN_JI(1);
-            if R_i == Inf
-               DEN_JO(1) = -2;
-            end 
-         end
-         A_J_m_g = A_mJ.*((R_wi/R_w).^m.*(R_s/R_wi).^(2*m).*(R_w^2*(R_wi/R_w).^m-R_wi^2).*(m+2)+((-R_w^2+R_wi^2*(R_wi/R_w).^m).*(m-2)))./(R_w*DEN_JO);   
-
-        if p == 2
-           A_J_m_g(1) = A_mJ(1)*R_i*(R_i/R_w)^3*(R_w^4-R_wi^4+4*R_s^4*log(R_w/R_wi))/DEN_JO(1);
-           if R_i == Inf
-              A_J_m_g(1) = A_mJ(1)/R_w^3*(R_w^4-R_wi^4+4*R_s^4*log(R_w/R_wi))/DEN_JO(1);
-           end
-        end
-
-        P1 = l_a*cond*(R_w^2*A_J./m.*TL*p*omega).^2./2;
-        P1 = P1.*(1./(2*m+2).*(R_w/R_i).^(2*m-2).*((R_r/R_i).^(2*m+2)-(R_m/R_i).^(2*m+2))+1./(2-2*m).*((R_w/R_r).^(2*m-2)-(R_w/R_m).^(2*m-2))+(R_w/R_i).^(2*m-2).*((R_r/R_i)^2-(R_m/R_i)^2));
-        P1_mid = P1*theta_mid;
-        P1_side = P1*theta_side;
-
-        P1 = (4*R_w^3*A_J./((R_r^2-R_m^2)*m)).^2;
-        P1 = P1.*(1./(m+2).*(R_w/R_i).^(m-2).*((R_r/R_i).^(m+2)-(R_m/R_i).^(m+2))+1./(2-m).*((R_w/R_r).^(m-2)-(R_w/R_m).^(m-2))).^2;
-        P1 = P1.*(l_a*cond*(TL*p*omega./((TL-n)*p)).^2.*(R_m^2-R_r^2)./4);
-        P1_mid = P1.*sin((TL-n)*p*theta_mid./2).^2./theta_mid;
-        P1_side = P1.*sin((TL-n)*p*theta_side./2).^2./theta_side;
-
-        P3 = l_a*cond.*(A_J./m*R_w^2).^2.*8./(R_r^2-R_m^2).*(TL*p*omega./((TL-n)*p)).^2;
-        P3 = P3.*R_w^2.*(1./(m+2).*(R_w/R_i).^(m-2).*((R_r/R_i).^(m+2)-(R_m/R_i).^(m+2))+1./(2-m).*((R_w/R_r).^(m-2)-(R_w/R_m).^(m-2))).^2;
-        P3_mid = -P3.*sin((TL-n)*p*theta_mid./2).^2./theta_mid;
-        P3_side = -P3.*sin((TL-n)*p*theta_side./2).^2./theta_side;
-
-        commandwindow
-        error(' -)Outrunner topology not yet implemented')
-
-end

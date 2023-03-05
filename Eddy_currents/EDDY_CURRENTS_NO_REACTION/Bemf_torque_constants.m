@@ -155,14 +155,14 @@ if p == 1
    end   
 end
 
-C = (R_m/R_s).^(n).*(R_wi^2*(R_wi/R_s).^(n)-R_w^2*(R_w/R_s).^(n))./((n+2)*R_m)+(R_wi^2*(R_m/R_wi).^(n)-R_w^2*(R_m/R_w).^(n))./((2-n)*R_m);
+C = (R_m/R_s).^(n).*(R_ws^2*(R_ws/R_s).^(n)-R_w^2*(R_w/R_s).^(n))./((n+2)*R_m)+(R_ws^2*(R_m/R_ws).^(n)-R_w^2*(R_m/R_w).^(n))./((2-n)*R_m);
 
-C_out = (R_w^2*(R_w/R_m).^(n)-R_wi^2*(R_wi/R_m).^(n))./((n+2)*R_m)+(R_w^2/R_s*(R_s/R_w).^(n)-R_wi^2/R_s*(R_s/R_wi).^(n))./(2-n).*(R_s/R_m).^(n+1);
+C_out = (R_w^2*(R_w/R_m).^(n)-R_ws^2*(R_ws/R_m).^(n))./((n+2)*R_m)+(R_w^2/R_s*(R_s/R_w).^(n)-R_ws^2/R_s*(R_s/R_ws).^(n))./(2-n).*(R_s/R_m).^(n+1);
 
 % the back-emf integral exhibits a singularity for np = 2
 if p == 2
-    C(1) = R_m.*log(R_wi./R_w) + R_m./(4*R_s.^4).*(R_wi.^4-R_w.^4);
-    C_out(1) = 1./R_m.^3.*(R_s.^4.*log(R_w./R_wi)+R_w.^4/4-R_wi.^4/4);
+    C(1) = R_m.*log(R_ws./R_w) + R_m./(4*R_s.^4).*(R_ws.^4-R_w.^4);
+    C_out(1) = 1./R_m.^3.*(R_s.^4.*log(R_w./R_ws)+R_w.^4/4-R_ws.^4/4);
 end
 
 

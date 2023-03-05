@@ -16,15 +16,26 @@ Inrunner
 Inverter_star_3f
 % clearvars -except n top pos neg phi_p phi_n N t runs
 
+mapping = 'no'; % 'yes' if current density map is wanted 'no' otherwise!
+plotting = 'yes'; % 'yes' if debugging is needed (plots and other stuff)
 
-plotting = "no";
-mapping = "no";
+Inrunner
+
+speed_radsec = speed_rpm*2*pi/60;
+
+if contains(plotting, 'yes')
+    t = linspace(0,T_fund,length(n));
+    figure;hold on
+    plot(t,(pos)'*cos(n.*p*speed_radsec*t+phi_p)+(neg)'*cos(n.*p*speed_radsec*t+phi_n))
+    plot(t,(pos)'*cos(n.*p*speed_radsec*t+phi_p-2/3*pi)+(neg)'*cos(n.*p*speed_radsec*t+phi_n+2/3*pi))
+    plot(t,(pos)'*cos(n.*p*speed_radsec*t+phi_p-4/3*pi)+(neg)'*cos(n.*p*speed_radsec*t+phi_n+4/3*pi))
+     
+end
+
 
 % run(top)
 mu_0 = 4*pi*1e-7; % air permeability
 cond = 0.667*1e6;
-speed_rpm = 2500;
-speed_radsec = speed_rpm*2*pi/60;
 
 %% useful indices for series harmonics definition
 
