@@ -6,7 +6,7 @@
 
 
 %% inrunner example
-mp.Digits(34);
+mp.Digits();
 % top = 'Inrunner_sym'; % Choose either 'Inrunner' or 'Outrunner'
 % top = 'Inrunner'; % Choose either 'Inrunner' or 'Outrunner'
 Inrunner
@@ -17,7 +17,7 @@ Inverter_star_3f
 % clearvars -except n top pos neg phi_p phi_n N t runs
 
 mapping = 'no'; % 'yes' if current density map is wanted 'no' otherwise!
-plotting = 'yes'; % 'yes' if debugging is needed (plots and other stuff)
+plotting = 'no'; % 'yes' if debugging is needed (plots and other stuff)
 
 Inrunner
 
@@ -151,7 +151,7 @@ P_loss = (1i*H.*(p*speed_radsec).*(C.*J_m + D.*Y_m)).*P_loss;
 P_loss = pi*R_m*l_a.*real(P_loss)./(mu_r*mu_0);
 P_loss(isnan(P_loss)) = 0;
 P_loss(isinf(P_loss)) = 0;
-P_loss = sum(sum(P_loss));
+P_loss = double(sum(sum(P_loss)));
 
 
 %% PLOTS & MAPS

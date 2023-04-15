@@ -27,7 +27,7 @@ VDC = 45; % available DC voltage [V]
 radsec = rpm*2*pi/60; % angular frequency [rad/sec]
 radsec_e = p*radsec; % electrical angular frequency [rad/sec]
 
-fsw = 10000;
+fsw = 25000;
 % radsec_e = fsw*2*pi/60;
 
 Efund = k_v(1)*radsec; % peak of fundamental back-emf [V]
@@ -51,7 +51,7 @@ end
 % PARAMETERS
 
 
-mult = 3;
+mult = 1;
 T_fund = 2*pi/radsec_e;
 Tsw = 1/fsw;
 shift = -Tsw/2*(1); % IT MUST BE NEGATIVE (set it to -Tsw/2 to have the reference in the first Tsw at zero deg/rad)
@@ -173,11 +173,13 @@ Volt_b = U*cos(radsec_e*mid_time-2*pi/3);
 Vb = Vb-Volt_b;
 
 Full_time = Full_time(5:end);
-Ripple_a = 1/(L)*cumsum(times.*Va);
+% Ripple_a = 1/(L)*cumsum(times.*Va);
+Ripple_a = 1/(R)*cumsum((1 -exp(-times*R./L)).*Va);
 % RIPPLE_a = [0;Ripple_a];
 RIPPLE_a = Ripple_a(4:end);
 
-Ripple_b = 1/(L)*cumsum(times.*Vb);
+% Ripple_b = 1/(L)*cumsum(times.*Vb);
+Ripple_b = 1/(R)*cumsum((1 -exp(-times*R./L)).*Vb);
 RIPPLE_b = Ripple_b(4:end);
 x = [abs(diff(Full_time))>0;true];
 Full_time = Full_time(x);
@@ -189,7 +191,7 @@ FULL_b = RIPPLE_b+I*cos(radsec_e*Full_time-2*pi/3);
 FULL_c = -(FULL_a+FULL_b);
 
 %% FFT
-samp_t = 1/(50*fsw); % sampling time for the resampling
+samp_t = 1/(100*fsw); % sampling time for the resampling
 N = round(T_fund/samp_t); % number of samples
 N = round2even(N); % an even number of samples is needed for the following code
 samp = linspace(Full_time(1),T_fund,N); % new time-sampled vector

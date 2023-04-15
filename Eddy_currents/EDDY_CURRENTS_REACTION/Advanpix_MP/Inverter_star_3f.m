@@ -51,7 +51,7 @@ end
 % PARAMETERS
 
 
-mult = 3;
+mult = 1;
 T_fund = 2*pi/radsec_e;
 Tsw = 1/fsw;
 shift = -Tsw/2*(1); % IT MUST BE NEGATIVE (set it to -Tsw/2 to have the reference in the first Tsw at zero deg/rad)
@@ -189,7 +189,7 @@ FULL_b = RIPPLE_b+I*cos(radsec_e*Full_time-2*pi/3);
 FULL_c = -(FULL_a+FULL_b);
 
 %% FFT
-samp_t = 1/(50*fsw); % sampling time for the resampling
+samp_t = 1/(100*fsw); % sampling time for the resampling
 N = round(T_fund/samp_t); % number of samples
 N = round2even(N); % an even number of samples is needed for the following code
 samp = linspace(Full_time(1),T_fund,N); % new time-sampled vector

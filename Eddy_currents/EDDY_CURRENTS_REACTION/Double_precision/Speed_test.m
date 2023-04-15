@@ -1,6 +1,6 @@
 clearvars
 clc
-runs = 100;
+runs = 50;
 
 tic
 for ii = 1:runs

@@ -24,14 +24,14 @@ mu_0 = 4*pi*1e-7; % air permeability
 
 
 %% inrunner geometry
-Inrunner
+% Inrunner
 
 %% outrunner geometry
-% Outrunner
+Outrunner
 
 %% RADIAL DISCRETIZATION 
 
-mapping = "no";
+mapping = "yes";
 torque = "no";
 back_emf = "no";
 if R_s>R_m %  inrunner

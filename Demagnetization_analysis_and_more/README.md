@@ -91,7 +91,7 @@ before.
 
 %--------------------------------------------------------------------------
 
-IN THE FOLDER NAMED: DEMAG_INCLUDED
+IN THE FOLDER NAMED: GPU
 
 MAIN_optim.m
 

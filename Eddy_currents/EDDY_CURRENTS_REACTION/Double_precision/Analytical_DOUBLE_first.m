@@ -6,11 +6,11 @@
 
 
 %% inrunner example
-top = 'Inrunner'; % Choose either 'Inrunner' or 'Outrunner'
+% top = 'Inrunner'; % Choose either 'Inrunner' or 'Outrunner'
 
 % inductance is obtained from the armature field solution
 Inverter_star_3f
-clearvars -except n top pos neg phi_p phi_n N t runs
+clearvars -except n top pos neg phi_p phi_n N T_fund t runs 
 
 plotting = "no";
 mapping = "no";
@@ -20,15 +20,22 @@ Inrunner
 speed_radsec = speed_rpm*2*pi/60;
 
 if contains(plotting, 'yes')
-    t = linspace(0,T_fund,length(n));
     figure;hold on
-    plot(t,(pos)'*cos(n.*p*speed_radsec*t+phi_p)+(neg)'*cos(n.*p*speed_radsec*t+phi_n))
-    plot(t,(pos)'*cos(n.*p*speed_radsec*t+phi_p-2/3*pi)+(neg)'*cos(n.*p*speed_radsec*t+phi_n+2/3*pi))
-    plot(t,(pos)'*cos(n.*p*speed_radsec*t+phi_p-4/3*pi)+(neg)'*cos(n.*p*speed_radsec*t+phi_n+4/3*pi))
+    ia = (pos)'*cos(n.*p*speed_radsec*t+phi_p)+(neg)'*cos(n.*p*speed_radsec*t+phi_n);
+    ib = (pos)'*cos(n.*p*speed_radsec*t+phi_p-2/3*pi)+(neg)'*cos(n.*p*speed_radsec*t+phi_n+2/3*pi);
+    ic = (pos)'*cos(n.*p*speed_radsec*t+phi_p-4/3*pi)+(neg)'*cos(n.*p*speed_radsec*t+phi_n+4/3*pi);
+    
+    plot(t,ia)
+    plot(t,ib)
+    plot(t,ic)
+    
+%     writematrix([t', ia'] , 'I1.txt')
+%     writematrix([t', ib'] , 'I2.txt')
+%     writematrix([t', ic'] , 'I3.txt')
      
 end
 
-run(top)
+% run(top)
 % pi = mp('pi');
 mu_0 = 4*pi*1e-7; % air permeability
 cond = 0.667*1e6;
@@ -92,7 +99,7 @@ tau = sqrt(-1i*cond*mu_r*mu_0*(H)*speed_radsec*p);
 % tau = (1-1i)./sqrt(2./(cond*mu_r*mu_0*H*speed_radsec*p));
 
 %% Harmonic fliters for Gibbs phenomenon reduction
-order_n = 0;
+order_n = 1;
 order_m = 0;
 sigma_n = (sin(pi*n./n(end))./(pi*n./n(end))).^order_n; % Lanczos sigma for Gibbs phenomenon reduction
 sigma_m = (sin(pi*m./m(end))./(pi*m./m(end))).^order_m; % Lanczos sigma for Gibbs phenomenon reduction

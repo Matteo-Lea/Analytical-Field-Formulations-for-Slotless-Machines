@@ -30,18 +30,19 @@ Inverter_star_3f
 clearvars -except n top pos neg phi_p phi_n T_fund runs
 
 map = 'no'; % 'yes' if current density map is wanted 'no' otherwise!
-plotting = 'no'; % 'yes' if debugging is needed (plots and other stuff)
+plotting = 'yes'; % 'yes' if debugging is needed (plots and other stuff)
 
 Inrunner
-omega = 2500*2*pi/60; % mechanical angular frequency [rad/s]
+omega = rpm*2*pi/60; % mechanical angular frequency [rad/s]
 
 if contains(plotting, 'yes')
     t = linspace(0,T_fund,length(n));
     figure;hold on
-    plot(t,(pos)'*cos(n.*p*omega*t+phi_p)+(neg)'*cos(n.*p*omega*t+phi_n))
-    plot(t,(pos)'*cos(n.*p*omega*t+phi_p-2/3*pi)+(neg)'*cos(n.*p*omega*t+phi_n+2/3*pi))
-    plot(t,(pos)'*cos(n.*p*omega*t+phi_p-4/3*pi)+(neg)'*cos(n.*p*omega*t+phi_n+4/3*pi))
-     
+    plot(t*1000,(pos)'*cos(n.*p*omega*t+phi_p)+(neg)'*cos(n.*p*omega*t+phi_n))
+    plot(t*1000,(pos)'*cos(n.*p*omega*t+phi_p-2/3*pi)+(neg)'*cos(n.*p*omega*t+phi_n+2/3*pi))
+    plot(t*1000,(pos)'*cos(n.*p*omega*t+phi_p-4/3*pi)+(neg)'*cos(n.*p*omega*t+phi_n+4/3*pi))
+    xlabel('Time [ms]')
+    ylabel('Current [A]')
 end
 
 cond = 0.667*1e6;                                                           % PM conductivity [S/m]
@@ -55,7 +56,7 @@ theta_side = (1-alpha_m)*pi/p;
 % Outrunner
 %% useful indices for series harmonics definition
 
-m_J = 7; % total number of harmonics better to be limited to 7 at most. 
+m_J = 3; % total number of harmonics better to be limited to 7 at most. 
           % m_J=3 gives good accuracy, fast computation and low memory usage                                                                
 m = (1:2:2*m_J);
 
@@ -90,7 +91,7 @@ m = [m, m, m, m]*p;
 n = [n, n, n, n];
 
 %% Harmonic fliters for Gibbs phenomenon reduction
-order_n = 1;
+order_n = 0;
 order_m = 0;
 sigma_n = (sin(pi*n./n(end))./(pi*n./n(end))).^order_n; % Lanczos sigma for Gibbs phenomenon reduction
 sigma_m = (sin(pi*m./m(end))./(pi*m./m(end))).^order_m; % Lanczos sigma for Gibbs phenomenon reduction
@@ -140,10 +141,10 @@ P2_mid = -P2.*sin(m*theta_mid./2).^2./theta_mid;
 P2_side = -P2.*sin(m*theta_side./2).^2./theta_side;
 
 P_mid = 2*p*(P1_mid+P2_mid);
-P_mid_main = sum(sum(P_mid));
+P_mid_main = sum(sum(P_mid)); % Contribution from each harmonic
 
 P_side = 2*p.*(P1_side+P2_side);
-P_side_main = sum(sum(P_side));
+P_side_main = sum(sum(P_side)); % Contribution from each harmonic
 
 
 %% The 2 different cases
@@ -328,11 +329,11 @@ P1 = sum(sum(2*p*[P1_side; P1_side2]));
 P2 = sum(sum(2*p*[P2_side; P2_side2]));
 P_tot_side = P1 + P2;
 
-TOT_mid = P_mid_main+P_tot_mid
+TOT_mid = P_mid_main+P_tot_mid;
 
-TOT_side = P_side_main+P_tot_side
+TOT_side = P_side_main+P_tot_side;
 
-TOT = P_mid_main+P_tot_mid + P_side_main+P_tot_side
+TOT = P_mid_main+P_tot_mid + P_side_main+P_tot_side;
 
 
 %% SOME DEBUGGING
@@ -345,7 +346,7 @@ theta = 0;
 J0 = p*omega*cond*Amp.*H.*sin(H*p*omega.*t+phi+m.*(theta)) ;
 J0 = squeeze(sum(sum(J0,2),1));
 figure
-plot(J0)
+plot(linspace (0,T_fund,size(n,1)+1), J0)
 
 
 Az = Amp.*(cos(H*p*omega.*t+phi+m.*(theta)));
