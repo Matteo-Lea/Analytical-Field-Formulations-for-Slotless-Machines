@@ -24,10 +24,10 @@ mu_0 = 4*pi*1e-7; % air permeability
 
 
 %% inrunner geometry
-% Inrunner
+Inrunner
 
 %% outrunner geometry
-Outrunner
+% Outrunner
 
 %% RADIAL DISCRETIZATION 
 
@@ -536,7 +536,7 @@ B_levels = linspace(B_min,B_max,100);
 
 
 if Halbach ==0
-figure;
+figure('Renderer','Painters');
 hold on;
 contourf(x,y,Norm_Bgm,B_levels,'edgecolor','none');
 contourf(x_m,y_m,Norm_Bm_m,B_levels,'edgecolor','none');
@@ -577,7 +577,7 @@ title({'Flux density norm map and isopotential lines',' in the whole 2D domain (
 
 elseif Halbach == 1
     
-figure;
+figure('Renderer','Painters');
 hold on;
 contourf(x,y,Norm_Bgm,B_levels,'LineStyle','none');
 contourf(x_m,y_m,Norm_Bm_m,B_levels,'LineStyle','none');

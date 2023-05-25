@@ -15,7 +15,7 @@ close all
 
 mu_0 = 4*pi*1e-7; % air permeability
 
-polepairs = 'p=3'; % available [3 5 7 9 11 13 15 17 19]
+polepairs = 'p=17'; % available [3 5 7 9 11 13 15 17 19]
 mode = 'NO_DEMAG'; % 'NO_DEMAG --> optimization without demagnetization
                    % 'W_DEMAG --> optimization with demagnetization
 load(['RESULTS\' polepairs '\' mode '\' polepairs ])
@@ -800,10 +800,10 @@ y_s = r_s.*cos(t_s);
 x_ext = r_ext.*sin(t_ext);
 y_ext = r_ext.*cos(t_ext);
 
-Levels = linspace(min([min(min(Az_m)) min(min(A_z)) min(min(Az_S_m)) min(min(Az_I_m))]),max([max(max(Az_m)) max(max(A_z)) max(max(Az_S_m)) max(max(Az_I_m))]),30);
+Levels = linspace(min([min(min(Az_m)) min(min(A_z)) min(min(Az_S_m)) min(min(Az_I_m))]),max([max(max(Az_m)) max(max(A_z)) max(max(Az_S_m)) max(max(Az_I_m))]),10);
 
 
-figure;
+figure('Renderer','Painters');
 hold on;
 if alpha_p~=0
 contourf(x_m1,y_m1,B_mag_1',linspace(-4,4,100),'LineColor','none');
@@ -848,7 +848,7 @@ axis image
 title('Resulting flux density map along the magnetization direction')
 
 
-figure;
+figure('Renderer','Painters');
 hold on;
 if alpha_p~=0
 contourf(x_m1,y_m1,B_dem_1',linspace(0,B_knee,100),'LineColor','none');
@@ -949,7 +949,7 @@ y_ext = r_ext.*cos(t_ext);
 Levels = linspace(min([min(min(Az_m)) min(min(A_z)) min(min(Az_S_m)) min(min(Az_I_m))]),max([max(max(Az_m)) max(max(A_z)) max(max(Az_S_m)) max(max(Az_I_m))]),30);
 
 
-figure;
+figure('Renderer','Painters');
 hold on;
 contourf(x_m1,y_m1,B_mag_1',linspace(-4,4,1000),'LineColor','none');
 contourf(x_m2,y_m2,B_mag_2',linspace(-4,4,1000),'LineColor','none');

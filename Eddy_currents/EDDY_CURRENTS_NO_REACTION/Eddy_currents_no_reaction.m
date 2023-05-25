@@ -15,7 +15,7 @@
 
 
 %% Machine parameters
-% clearvars
+clearvars
 % clc
 % close all
 
@@ -38,9 +38,9 @@ omega = rpm*2*pi/60; % mechanical angular frequency [rad/s]
 if contains(plotting, 'yes')
     t = linspace(0,T_fund,length(n));
     figure;hold on
-    plot(t*1000,(pos)'*cos(n.*p*omega*t+phi_p)+(neg)'*cos(n.*p*omega*t+phi_n))
-    plot(t*1000,(pos)'*cos(n.*p*omega*t+phi_p-2/3*pi)+(neg)'*cos(n.*p*omega*t+phi_n+2/3*pi))
-    plot(t*1000,(pos)'*cos(n.*p*omega*t+phi_p-4/3*pi)+(neg)'*cos(n.*p*omega*t+phi_n+4/3*pi))
+    plot(t*1000,(pos)'*cos(n.*p*omega*t+phi_p)+(neg)'*cos(n.*p*omega*t+phi_n), 'linewidth', 2)
+    plot(t*1000,(pos)'*cos(n.*p*omega*t+phi_p-2/3*pi)+(neg)'*cos(n.*p*omega*t+phi_n+2/3*pi), 'linewidth', 2)
+    plot(t*1000,(pos)'*cos(n.*p*omega*t+phi_p-4/3*pi)+(neg)'*cos(n.*p*omega*t+phi_n+4/3*pi), 'linewidth', 2)
     xlabel('Time [ms]')
     ylabel('Current [A]')
 end
@@ -91,7 +91,7 @@ m = [m, m, m, m]*p;
 n = [n, n, n, n];
 
 %% Harmonic fliters for Gibbs phenomenon reduction
-order_n = 0;
+order_n = 1.5;
 order_m = 0;
 sigma_n = (sin(pi*n./n(end))./(pi*n./n(end))).^order_n; % Lanczos sigma for Gibbs phenomenon reduction
 sigma_m = (sin(pi*m./m(end))./(pi*m./m(end))).^order_m; % Lanczos sigma for Gibbs phenomenon reduction
@@ -400,7 +400,7 @@ if contains(map, 'yes')
     th2 = +(alpha_m*pi/p);
     %---------------------------------------------------------------------
     
-    figure;
+    figure('Renderer','Painters');
     hold on;
     contourf(x_m,y_m,J_mid',J_levels,'edgecolor','none');
     contourf(x_s,y_s,J_side',J_levels,'edgecolor','none');

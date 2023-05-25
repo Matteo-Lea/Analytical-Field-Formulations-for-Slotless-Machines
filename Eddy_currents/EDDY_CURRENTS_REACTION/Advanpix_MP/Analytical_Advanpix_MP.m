@@ -16,7 +16,7 @@ Inrunner
 Inverter_star_3f
 % clearvars -except n top pos neg phi_p phi_n N t runs
 
-mapping = 'no'; % 'yes' if current density map is wanted 'no' otherwise!
+mapping = 'yes'; % 'yes' if current density map is wanted 'no' otherwise!
 plotting = 'no'; % 'yes' if debugging is needed (plots and other stuff)
 
 Inrunner
@@ -207,7 +207,7 @@ if contains(mapping, 'yes')
 
     th1 = -(alpha_p*pi/p);
     th2 = +(alpha_p*pi/p);
-    figure
+    figure('Renderer','Painters');
     hold on
     contourf(Xmid,Ymid,(Jmid_COMSOL),100,'edgecolor','none')
     % contourf(Xsid,Ysid,(COMSOLsid),100,'edgecolor','none')

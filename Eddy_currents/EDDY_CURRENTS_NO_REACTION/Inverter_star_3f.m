@@ -27,7 +27,7 @@ VDC = 45; % available DC voltage [V]
 radsec = rpm*2*pi/60; % angular frequency [rad/sec]
 radsec_e = p*radsec; % electrical angular frequency [rad/sec]
 
-fsw = 25000;
+fsw = 10000;
 % radsec_e = fsw*2*pi/60;
 
 Efund = k_v(1)*radsec; % peak of fundamental back-emf [V]
@@ -54,6 +54,7 @@ end
 mult = 1;
 T_fund = 2*pi/radsec_e;
 Tsw = 1/fsw;
+% shift = -mod(T_fund,Tsw) / 2; % IT MUST BE NEGATIVE (set it to -Tsw/2 to have the reference in the first Tsw at zero deg/rad)
 shift = -Tsw/2*(1); % IT MUST BE NEGATIVE (set it to -Tsw/2 to have the reference in the first Tsw at zero deg/rad)
 Ns = ceil((mult*T_fund+abs(shift))*fsw)+1; % switching periods over the specified fundamental periods
 
@@ -172,19 +173,45 @@ Va = Va-Volt_a;
 Volt_b = U*cos(radsec_e*mid_time-2*pi/3);
 Vb = Vb-Volt_b;
 
-Full_time = Full_time(5:end);
-% Ripple_a = 1/(L)*cumsum(times.*Va);
-Ripple_a = 1/(R)*cumsum((1 -exp(-times*R./L)).*Va);
-% RIPPLE_a = [0;Ripple_a];
-RIPPLE_a = Ripple_a(4:end);
+% Full_time = Full_time(5:end);
+Ripple_a = 1/(L)*cumsum(times.*Va);
+RIPPLE_a = [0;Ripple_a];
 
-% Ripple_b = 1/(L)*cumsum(times.*Vb);
-Ripple_b = 1/(R)*cumsum((1 -exp(-times*R./L)).*Vb);
-RIPPLE_b = Ripple_b(4:end);
-x = [abs(diff(Full_time))>0;true];
-Full_time = Full_time(x);
-RIPPLE_a = RIPPLE_a(x);
-RIPPLE_b = RIPPLE_b(x);
+idx_0 = find(Full_time>0, 1);
+idx_f = find(Full_time>=T_fund, 1);
+idx_f = floor(idx_f/8) * 8 + idx_0;
+T_fund = Full_time(idx_f) -  Full_time(idx_0); % faked fundamental period to have a periodic wave
+idx_f = find(Full_time>=T_fund, 1);
+Curr_f = interp1(Full_time(idx_f-1:idx_f),RIPPLE_a(idx_f-1:idx_f), T_fund );
+Curr_0 = interp1(Full_time(idx_0-1:idx_0),RIPPLE_a(idx_0-1:idx_0), 0);
+
+NEW_curr_a = RIPPLE_a;
+NEW_curr_a(idx_0-1) = Curr_0;
+NEW_curr_a(idx_f) = Curr_f;
+NEW_curr_a = NEW_curr_a(idx_0-1:idx_f);
+
+NEW_time = Full_time;
+NEW_time(idx_0-1) = 0;
+NEW_time(idx_f) = T_fund;
+NEW_time = NEW_time(idx_0-1:idx_f);
+
+
+Ripple_b = 1/(L)*cumsum(times.*Vb);
+RIPPLE_b = [0;Ripple_b];
+Curr_f = interp1(Full_time(idx_f-1:idx_f),RIPPLE_b(idx_f-1:idx_f), T_fund);
+Curr_0 = interp1(Full_time(idx_0-1:idx_0),RIPPLE_b(idx_0-1:idx_0), 0);
+
+NEW_curr_b = RIPPLE_b;
+NEW_curr_b(idx_0-1) = Curr_0;
+NEW_curr_b(idx_f) = Curr_f;
+NEW_curr_b = NEW_curr_b(idx_0-1:idx_f);
+
+
+% Full_time = [Full_time(1:idx-1); T_fund];
+x = [abs(diff(NEW_time))>0;true];
+Full_time = NEW_time(x);
+RIPPLE_a = NEW_curr_a(x);
+RIPPLE_b = NEW_curr_b(x);
 
 FULL_a = RIPPLE_a+I*cos(radsec_e*Full_time);
 FULL_b = RIPPLE_b+I*cos(radsec_e*Full_time-2*pi/3);

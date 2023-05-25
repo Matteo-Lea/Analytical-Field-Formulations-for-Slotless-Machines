@@ -27,7 +27,7 @@ Inrunner
 %% outrunner example
 % Outrunner
 
-mapping = "no";
+mapping = "yes";
 %% useful indices for series harmonics definition
 m_J = 4;                                                                  % the total number of harmonics will be 2*(m_J+1)
 x = 0:1:m_J;
@@ -430,7 +430,7 @@ end
 B_min =  min( [min(min(Norm_BbwJ))  min(min(Norm_BgJ))  min(min(Norm_BwbJ))  min(min(Norm_BwJ))]);
 B_max =  max( [max(max(Norm_BbwJ))  max(max(Norm_BgJ))  max(max(Norm_BwbJ))  max(max(Norm_BwJ))]);
 B_levels = linspace(B_min,B_max,100);
-figure;
+figure('Renderer','Painters');
 hold on;
 contourf(x,y,Norm_BgJ,B_levels,'LineStyle','none');
 contour(x, y,A_z_J_g',Levels,'LineColor','k','linewidth',1.2)  

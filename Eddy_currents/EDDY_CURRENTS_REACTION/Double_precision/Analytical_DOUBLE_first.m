@@ -12,7 +12,7 @@
 Inverter_star_3f
 clearvars -except n top pos neg phi_p phi_n N T_fund t runs 
 
-plotting = "no";
+plotting = "yes";
 mapping = "no";
 
 Inrunner

@@ -78,7 +78,7 @@ S_Ph = abs(pi*(R_ws^2-R_w^2)/(6*p)); % phase belt cross section
 N_tc = 3; % number of conductors per coil
 q = 1; %coils per pole and per phase
 b = 1; % parallel ways per phase
-% I = 1; % phase current peak value [A]
+I = 1; % phase current peak value [A]
 n_cs = N_tc*q/b;
 speed_rpm = 2500;
 
