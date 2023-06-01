@@ -4,7 +4,7 @@ clc
 
 %% IMPORTING AVAILBLE DATA
 % Check file names in PM-data folder
-filename = 'N55@120C';
+filename = 'N30AH@220C';
 
 CELL = readcell('PM_data.csv');
 
