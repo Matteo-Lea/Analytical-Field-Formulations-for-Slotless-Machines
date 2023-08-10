@@ -1,10 +1,10 @@
 # Analytical-Field-Formulations-for-Slotless-Machines
 
-Diving into somo more application of Sub-Domain modeling here we are using
+Diving into some more applications of Sub-Domain modeling here we are using
 the field solution in the stator yoke to estimate the iron losses.
-All the models use predefined laminations loss coefficients based on some 
+All the models use predefined lamination loss coefficients based on some 
 data I had (unfortunately I cannot share the data), but if you read my 
-paper [1] you will get a good guide on how find the different coefficients
+paper [1] you will get a good guide on how to find the different coefficients
 for any laminations loss dataset.
 
 [1] M. Leandro, N. Elloumi, A. Tessarolo and J. K. Nøland, "Analytical Iron
@@ -13,7 +13,7 @@ Machines," in IEEE Transactions on Industry Applications, vol. 58, no. 4,
 pp. 4602-4613, July-Aug. 2022, doi: 10.1109/TIA.2022.3171528.
 
 
-Short guide through the different scripts in this folder:
+A short guide through the different scripts in this folder:
 
 Inrunner.m and Outrunner.m
 
@@ -22,10 +22,10 @@ Inrunner.m and Outrunner.m
 Either of these two motors are loaded every time you run one of the other 
 scripts (just look for the line where they are called in each script and 
 you will see  which one is called). 
-They do nothing more but loading the motor geometry and some useful motor
+They do nothing more but load the motor geometry and some practical motor
 parameters needed to solve the field problem; it's like the Parameters
 definition under Global Definitions in Comsol if you are familiar with it.
-If you feel confident enough for changing the parameters, do so, but make 
+If you feel confident enough to change the parameters, do so, but make 
 sure to understand what they mean first ;)
 
 %--------------------------------------------------------------------------
@@ -35,11 +35,11 @@ Iron_loss_CCM.m
 %--------------------------------------------------------------------------
 
 This code uses the iron loss model based on constant coefficients 
-describing the laminations iron loss variation with flux density and 
+describing the lamination's iron loss variation with flux density and 
 frequency, according to:
 Ke*B^2*f^2 + Kh*B^alpha*f + Ka*B^1.5*f^1.5
 
-'COEFF', 'B_exp' and 'f_exp' hold the loss coefficients, flux density 
+'COEFF', 'B_exp', and 'f_exp' hold the loss coefficients, flux density 
 exponents and frequency exponents.
 
 'CCM_loss_freq' and 'CCM_loss_time' hold the computed iron losses
@@ -50,12 +50,12 @@ Iron_loss_CAL2.m
 
 %--------------------------------------------------------------------------
 
-This code uses the iron loss model based on the two components equation 
+This code uses the iron loss model based on the two-components equation 
 with variable coefficients and constant flux density exponent for the 
 hysteresis component:
    Ke(f,B)*B^2*f^2 + Kh(f,B)*B^2*f 
 
-The laminations loss data was divded into two frequency ranges wherein the
+The laminations loss data was divided into two frequency ranges wherein the
 dependency on the frequency for the different coefficients is neglected. 
 Within the two frequency ranges the coefficients for the polynomial models 
 describing the iron loss coefficients are:
@@ -74,7 +74,7 @@ This code uses the iron loss model based on the three components equation
 with variable coefficients:
    Ke(B)*B^2*f^2 + Kh(f)*B^alpha(B,f)*f + Ka(B)*B^1.5*f^1.5
 
-The laminations loss data was divded into two frequency ranges wherein the
+The laminations loss data was divided into two frequency ranges wherein the
 dependency on the frequency for the different coefficients is neglected. 
 Within the two frequency ranges the coefficients for the polynomial models 
 describing the iron loss coefficients are:
@@ -96,7 +96,7 @@ with variable coefficients with the rotational correction 'rot' which is
 assumed to be dependent on the flux density only:
    (Ke(B)*B^2*f^2 + Kh(f)*B^alpha(B,f)*f + Ka(B)*B^1.5*f^1.5)*rot(B)
 
-The laminations loss data was divded into two frequency ranges wherein the
+The laminations loss data was divided into two frequency ranges wherein the
 dependency on the frequency for the different coefficients is neglected. 
 Within the two frequency ranges the coefficients for the polynomial models 
 describing the iron loss coefficients are:
@@ -115,12 +115,12 @@ Iron_Loss_speed_sweep.m
 
 This code uses all the different scripts described above to evaluate the 
 losses over a speed range defined in the variable 'speed'.
-In this way you will get a comparison of all the different loss models.
-Suggestion: in the input file 'Inrunner.m' if you change the stator 
+In this way, you will get a comparison of all the different loss models.
+Suggestion: In the input file 'Inrunner.m' if you change the stator 
 back-iron thickness by changing R_se you might be able to see a bigger 
 difference between the different models (since for the predefined motor 
-geometry, all the iron loss models give a good fit to the experimental data
-for the flux density value in the iron yoke)
+geometry all the iron loss models give a good fit to the experimental data
+at the flux density value in the iron yoke)
 
 %--------------------------------------------------------------------------
 
